@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Git常用命令</title>
+      <link href="/pages/eb9daab9.html"/>
+      <url>/pages/eb9daab9.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="SSH创建秘钥"><a href="#SSH创建秘钥" class="headerlink" title="SSH创建秘钥"></a>SSH创建秘钥</h2><ul><li><p>1.以下命令行会在/your_home_path/.ssh目录下创建id_rsa名称的公钥和私钥，命令执行后会提示输入passphrase，可一路回车使用默认设置。</p><blockquote><p>ssh-keygen -t rsa -C “<a href="mailto:xx@xx.com" target="_blank" rel="noopener">xx@xx.com</a>”</p></blockquote></li><li><p>2.可指定秘钥名称的创建方式</p><blockquote><p>ssh-keygen -t rsa -f id_rsa_xx -C “<a href="mailto:xx@xx.com" target="_blank" rel="noopener">xx@xx.com</a>“</p></blockquote></li></ul><a id="more"></a><h2 id="Git常用命令"><a href="#Git常用命令" class="headerlink" title="Git常用命令"></a>Git常用命令</h2><h4 id="1-Git常用设置"><a href="#1-Git常用设置" class="headerlink" title="1.Git常用设置"></a>1.Git常用设置</h4><p>查看当前git库配置信息</p><blockquote><p>git config –list</p></blockquote><p>配置全局用户名</p><blockquote><p>git config –global user.name “xx”</p></blockquote><p>配置全局邮箱</p><blockquote><p>git config –global user.email “<a href="mailto:xx@xx.com" target="_blank" rel="noopener">xx@xx.com</a>“</p></blockquote><p>配置命令自动着色</p><blockquote><p>git config –global color.ui true<br>git config –global color.status auto<br>git config –global color.diff auto<br>git config –global color.diff auto<br>git config –global color.branch auto<br>git config –global color.interactive auto</p></blockquote><p>移除代理</p><blockquote><p>git config –global –unset http.proxy</p></blockquote><h4 id="2-新建Git仓库"><a href="#2-新建Git仓库" class="headerlink" title="2.新建Git仓库"></a>2.新建Git仓库</h4><p>初始化本地git仓库</p><blockquote><p>git init</p></blockquote><p>当前目录下创建一个文件夹，并初始化为Git仓库</p><blockquote><p>git init xx</p></blockquote><p>从远端克隆一个仓库到本地</p><blockquote><p>git clone <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:LeevinLi/xx.git</p></blockquote><p>克隆远端仓库，并指定本地保存的目录</p><blockquote><p>git clone <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:LeevinLi/xx.git /xx/xx</p></blockquote><h4 id="3-文件添加-删除-提交操作"><a href="#3-文件添加-删除-提交操作" class="headerlink" title="3.文件添加/删除/提交操作"></a>3.文件添加/删除/提交操作</h4><p>添加指定文件到暂缓区</p><blockquote><p>git add xx</p></blockquote><p>添加当前目录所有文件到暂缓区</p><blockquote><p>git add .</p></blockquote><p>删除指定文件，并放入暂缓区</p><blockquote><p>git rm xx</p></blockquote><p>停止跟踪指定文件</p><blockquote><p>git rm –cached xx</p></blockquote><p>修改文件名称，并放入暂缓区</p><blockquote><p>git mv oldName newName</p></blockquote><p>指定提交信息，并将修改提交到本地仓库</p><blockquote><p>git commit -m “xx”</p></blockquote><p>将add和commit合为一步</p><blockquote><p>git commit -am “xx”</p></blockquote><p>提交工作区变化直接到本地仓库</p><blockquote><p>git commit -a</p></blockquote><p>提交时显示所有diff信息</p><blockquote><p>git commit -v</p></blockquote><p>合并上一次提交（用于反复修改）</p><blockquote><p>git commit –amend -m “xx”</p></blockquote><h4 id="4-撤销-回退操作"><a href="#4-撤销-回退操作" class="headerlink" title="4.撤销/回退操作"></a>4.撤销/回退操作</h4><p>恢复暂缓区的指定文件到工作区</p><blockquote><p>git checkout xx</p></blockquote><p>恢复某个commit的指定文件到暂缓区和工作区</p><blockquote><p>git checkout commitid xx</p></blockquote><p>恢复暂缓区的所有文件到工作区(*工作区修改会丢失)</p><blockquote><p>git checkout .</p></blockquote><p>重置暂缓区的指定文件或commit</p><blockquote><p>git reset xx</p></blockquote><p>重置暂缓区和工作区(*工作区修改会丢失)</p><blockquote><p>git reset –hard</p></blockquote><p>强制重置当前分支的HEAD为指定commit，同时改变暂缓区和工作区(*工作区修改会丢失)</p><blockquote><p>git reset –hard commitid</p></blockquote><p>将当前版本重置为HEAD(*工作区修改会丢失)</p><blockquote><p>git reset –hard HEAD</p></blockquote><p>撤销提交</p><blockquote><p>git revert commitid</p></blockquote><h4 id="5-暂缓区操作"><a href="#5-暂缓区操作" class="headerlink" title="5.暂缓区操作"></a>5.暂缓区操作</h4><p>将所有修改存入暂存</p><blockquote><p>git stash</p></blockquote><p>将所有修改存入暂存，并设置tag信息</p><blockquote><p>git stash save “xx”</p></blockquote><p>应用上一次的暂存，并删除上一次暂存记录</p><blockquote><p>git stash pop</p></blockquote><p>查看所有暂存</p><blockquote><p>git stash list</p></blockquote><p>查看指定暂存的详细内容(用下标表示)</p><blockquote><p>git stash show -p stash@{0}</p></blockquote><p>应用指定暂存(用下标表示)</p><blockquote><p>git stash apply stash@{0}</p></blockquote><p>删除指定暂存</p><blockquote><p>git stash drop stash@{0}</p></blockquote><h4 id="6-分支操作"><a href="#6-分支操作" class="headerlink" title="6.分支操作"></a>6.分支操作</h4><p>显示所有本地分支</p><blockquote><p>git branch</p></blockquote><p>显示所有远端分支</p><blockquote><p>git branch -r</p></blockquote><p>显示所有分支</p><blockquote><p>git branch -a</p></blockquote><p>新建指定分支，但停留在当前分支</p><blockquote><p>git branch xx</p></blockquote><p>创建新分支，跟踪远端分支，并切换到该分支</p><blockquote><p>git checkout -b local origin/remote<br>git branch –trach local origin/remote</p></blockquote><p>建立追踪关系，在现有分支与指定的远程分支之间</p><blockquote><p>git branch –set-upstream local origin/remote</p></blockquote><p>切换到指定分支</p><blockquote><p>git checkout xx</p></blockquote><p>切换到上一个分支</p><blockquote><p>git checkout -</p></blockquote><p>新建指向commitid的新分支xx</p><blockquote><p>git branch xx commitid</p></blockquote><p>显示包含提交xx的分支</p><blockquote><p>git branch –contains xx</p></blockquote><p>显示所有已合并到当前分支的分支</p><blockquote><p>git branch –merged</p></blockquote><p>显示所有未合并到当前分支的分支</p><blockquote><p>git branch –no-merged</p></blockquote><p>修改本地分支名称</p><blockquote><p>git branch -m oldName newName</p></blockquote><p>删除指定分支</p><blockquote><p>git branch -d xx</p></blockquote><p>强制删除指定分支</p><blockquote><p>git branch -D xx</p></blockquote><p>图示当前分支历史</p><blockquote><p>git show-branch</p></blockquote><p>图示所有分支历史</p><blockquote><p>git show-branch –all</p></blockquote><p>删除远程分支</p><blockquote><p>git push origin –delete xx<br>git branch -dr xx</p></blockquote><p>合并xx分支到当前分支(远程分支则使用origin/xx)</p><blockquote><p>git merge xx</p></blockquote><p>合并指定提交至当前分支</p><blockquote><p>git cherry-pick commitid</p></blockquote><h4 id="7-远程仓库操作"><a href="#7-远程仓库操作" class="headerlink" title="7.远程仓库操作"></a>7.远程仓库操作</h4><p>下载远端仓库修改</p><blockquote><p>git fetch xx</p></blockquote><p>同步远端仓库修改至本地分支</p><blockquote><p>git pull remote local</p></blockquote><p>显示所有远端仓库</p><blockquote><p>git remote -v</p></blockquote><p>显示指定远端仓库信息</p><blockquote><p>git remote show xx</p></blockquote><p>本地已经存在的项目关联指定远端仓库</p><blockquote><p>git remote add origin xx</p></blockquote><p>上传本地指定分支到远端仓库</p><blockquote><p>git push remote local</p></blockquote><p>推送当前分支到远程xx分支</p><blockquote><p>git push origin xx</p></blockquote><p>强行推送本地分支到远端分支(*本地会覆盖远端)</p><blockquote><p>git push remote –force</p></blockquote><p>推送所有分支到远端仓库</p><blockquote><p>git push remote –all</p></blockquote><h4 id="8-信息查看"><a href="#8-信息查看" class="headerlink" title="8.信息查看"></a>8.信息查看</h4><p>查看当前版本状态（是否修改）</p><blockquote><p>git status</p></blockquote><p>查看暂存区和工作区的差异</p><blockquote><p>git diff</p></blockquote><p>查看工作区和分支最新commit的差异</p><blockquote><p>git diff HEAD</p></blockquote><p>查看提交日志</p><blockquote><p>git log</p></blockquote><p>查看最近n次提交日志</p><blockquote><p>git log -5</p></blockquote><p>提交日志及相关变动文件</p><blockquote><p>git log –stat</p></blockquote><p>查看指定文件提交diff记录</p><blockquote><p>git log -p xx</p></blockquote><p>根据关键词查找提交历史</p><blockquote><p>git log -S xx</p></blockquote><p>查看指定文件的版本历史</p><blockquote><p>git log –follow xx</p></blockquote><p>显示所有未添加至index的变更</p><blockquote><p>git diff</p></blockquote><p>显示暂存区和上一个commit的差异</p><blockquote><p>git diff –cached xx</p></blockquote><p>比较与上一个版本的差异</p><blockquote><p>git diff HEAD^</p></blockquote><p>比较两个分支的差异（远程分支origin/master）</p><blockquote><p>git diff xxx…xxx</p></blockquote><p>只显示差异的文件，不显示具体内容</p><blockquote><p>git diff origin/master..master –stat</p></blockquote><p>查看某次提交的详细内容</p><blockquote><p>git show commitid</p></blockquote><p>显示最近一次提交的详细内容</p><blockquote><p>git show HEAD</p></blockquote><p>显示最近几次提交的详细内容(N次就N个^)</p><blockquote><p>git show HEAD^</p></blockquote><p>显示所有用户的提交次数</p><blockquote><p>git shortlog -sn</p></blockquote><p>显示指定文件的修改记录</p><blockquote><p>git blame xx</p></blockquote><p>显示所有提交，包括孤立节点</p><blockquote><p>git reflog</p></blockquote><h4 id="9-patch操作"><a href="#9-patch操作" class="headerlink" title="9.patch操作"></a>9.patch操作</h4><p>导出当前修改内容为patch文件(路径可指定)</p><blockquote><p>git diff &gt; xx/xx/xx.patch</p></blockquote><p>将指定commit变化内容导出为patch文件</p><blockquote><p>git format-patch commit…commit</p></blockquote><p>检查指定的patch文件</p><blockquote><p>git apply –stat xx/xx.patch</p></blockquote><p>检查patch文件是否能正常打入</p><blockquote><p>git apply –check xx/xx.patch</p></blockquote><p>应用指定patch文件</p><blockquote><p>git apply &lt; xx/xx.patch</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-模板模式</title>
+      <link href="/pages/dd0dc550.html"/>
+      <url>/pages/dd0dc550.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-简单工厂模式</title>
+      <link href="/pages/eeda6823.html"/>
+      <url>/pages/eeda6823.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><ul><li><p>概述<br>属于<strong>创建式模式</strong>，它提供了创建对象的一种方式，封装内部的业务，对外围只提供创建操作的对象工厂。</p></li><li><p>解析<br>运用面向对象的编程思想，通过封装，继承，多态可降低程序的耦合性，提高程序的可维护，可复用，可扩展性，使得程序更加灵活。</p></li><li><p>实例程序<br>计算器加减乘除四种计算方式，通过OperationFactory来创建计算方式。</p></li><li><p>UML结构图<br><img src="/images/uml-simple-factory.png" alt="UML图"></p></li><li><p>源码实例</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (getBaseContext() == <span class="keyword">null</span>) &#123;  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"System services not available to Activities before onCreate()"</span>);</span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//........  </span></span><br><span class="line">    <span class="keyword">if</span> (WINDOW_SERVICE.equals(name)) &#123;  </span><br><span class="line">        <span class="keyword">return</span> mWindowManager;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SEARCH_SERVICE.equals(name)) &#123;  </span><br><span class="line">        ensureSearchManager();  </span><br><span class="line">        <span class="keyword">return</span> mSearchManager;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//.......  </span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.getSystemService(name);  </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-原型模式</title>
+      <link href="/pages/59ae5ad8.html"/>
+      <url>/pages/59ae5ad8.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-策略模式</title>
+      <link href="/pages/bae0704a.html"/>
+      <url>/pages/bae0704a.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><ul><li><p>概述<br>属于<strong>行为模式</strong>，它定义了算法家族，分别封装起来，让它们之间可以相互替换，此模式让算法的变化，不会影响到使用算法的客户。</p></li><li><p>解析<br>1.策略模式是一种定义一系列算法的方法，从概念上来看，所有这些算法完成的都是相同的工作，只是实现不同，它可以以相同的方式调用所有的算法，减少了各种算法类与使用算法类之间的耦合。<br>2.策略模式的Strategy类层次为Context定义了一系列的可供重用的算法或行为，继承有助于提取出这些算法中的公共功能。<br>3.简化了单元测试，每个算法都有自己的类，可以通过自己的接口单独测试。<br>4.当不同的行为堆砌在一个类中时，就很难避免使用条件语句来选择合适的行为，将这些行为封装在一个个独立的Strategy类中，可以在使用这些行为的类中消除条件语句。</p></li><li><p>实例程序<br>超市里不同优惠活动方案，包括满减(满300返100)和折扣(8折)。</p></li><li><p>UML结构图<br><img src="/images/uml-strategy.png" alt="UML图"></p></li><li><p>源码实例<br>Android源码中动画设置时间插值器时就使用了策略模式。不同类型的插值器都实现了<code>TimeInterpolator</code>接口，在具体<code>AccelerateDecelerateInterpolator</code>，<code>LinearInterpolator</code>，<code>DecelerateInterpolator</code>类中实现了不同的运动轨迹，从而使用者可以根据不同的场景选择不同的插值器实现不同的动画效果。</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-装饰器模式</title>
+      <link href="/pages/b74e18cd.html"/>
+      <url>/pages/b74e18cd.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-六大设计原则</title>
+      <link href="/pages/9f6c8519.html"/>
+      <url>/pages/9f6c8519.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h2><ul><li>描述<br>一个类应用仅有一个引起它变化的原因。</li><li>例子</li></ul><h2 id="开放-封闭原则"><a href="#开放-封闭原则" class="headerlink" title="开放-封闭原则"></a>开放-封闭原则</h2><ul><li>描述<br>软件实体（类，模块，函数等）应该可以扩展，但是不可修改。对于扩展是开放的，对于更改是封闭的。</li><li>例子</li></ul><h2 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h2><ul><li>描述<br>高层次模块不应该依赖低层模块，两个都应该依赖抽象。 抽象不应该依赖细节，细节应该依赖抽象。</li><li>例子  </li></ul><a id="more"></a><h2 id="里氏代换原则"><a href="#里氏代换原则" class="headerlink" title="里氏代换原则"></a>里氏代换原则</h2><ul><li>描述<br>子类型必须能够替换它们的父类型。</li><li>例子  </li></ul><h2 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h2><ul><li>描述  </li><li>例子  </li></ul><h2 id="单一职责原则-1"><a href="#单一职责原则-1" class="headerlink" title="单一职责原则"></a>单一职责原则</h2><ul><li>描述  </li><li>例子  </li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
