@@ -29,31 +29,6 @@
     
     
     <entry>
-      <title>大话设计模式读书笔记-模板模式</title>
-      <link href="/pages/dd0dc550.html"/>
-      <url>/pages/dd0dc550.html</url>
-      
-        <content type="html"><![CDATA[<h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2>]]></content>
-      
-      
-      <categories>
-          
-          <category> Design-patterns </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Design-patterns </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>大话设计模式读书笔记-原型模式</title>
       <link href="/pages/59ae5ad8.html"/>
       <url>/pages/59ae5ad8.html</url>
@@ -104,11 +79,61 @@
     
     
     <entry>
+      <title>大话设计模式读书笔记-模板模式</title>
+      <link href="/pages/dd0dc550.html"/>
+      <url>/pages/dd0dc550.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> Design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>大话设计模式读书笔记-简单工厂模式</title>
       <link href="/pages/eeda6823.html"/>
       <url>/pages/eeda6823.html</url>
       
         <content type="html"><![CDATA[<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><ul><li><p>概述<br>属于<strong>创建式模式</strong>，它提供了创建对象的一种方式，封装内部的业务，对外围只提供创建操作的对象工厂。</p></li><li><p>解析<br>运用面向对象的编程思想，通过封装，继承，多态可降低程序的耦合性，提高程序的可维护，可复用，可扩展性，使得程序更加灵活。</p></li><li><p>实例程序<br>计算器加减乘除四种计算方式，通过OperationFactory来创建计算方式。</p></li><li><p>UML结构图<br><img src="/images/uml-simple-factory.png" alt="UML图"></p></li><li><p>源码实例</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (getBaseContext() == <span class="keyword">null</span>) &#123;  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"System services not available to Activities before onCreate()"</span>);</span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//........  </span></span><br><span class="line">    <span class="keyword">if</span> (WINDOW_SERVICE.equals(name)) &#123;  </span><br><span class="line">        <span class="keyword">return</span> mWindowManager;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SEARCH_SERVICE.equals(name)) &#123;  </span><br><span class="line">        ensureSearchManager();  </span><br><span class="line">        <span class="keyword">return</span> mSearchManager;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//.......  </span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.getSystemService(name);  </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Design-patterns </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Design-patterns </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>大话设计模式读书笔记-装饰器模式</title>
+      <link href="/pages/b74e18cd.html"/>
+      <url>/pages/b74e18cd.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2>]]></content>
       
       
       <categories>
@@ -154,23 +179,48 @@
     
     
     <entry>
-      <title>大话设计模式读书笔记-装饰器模式</title>
-      <link href="/pages/b74e18cd.html"/>
-      <url>/pages/b74e18cd.html</url>
+      <title>ADB常用命令</title>
+      <link href="/pages/e585a8.html"/>
+      <url>/pages/e585a8.html</url>
       
-        <content type="html"><![CDATA[<h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2>]]></content>
+        <content type="html"><![CDATA[<h2 id="ADB常用命令"><a href="#ADB常用命令" class="headerlink" title="ADB常用命令"></a>ADB常用命令</h2><p>安装与卸载</p><blockquote><p>adb install -r xx<br>adb uninstall xx</p></blockquote><p>查看应用信息</p><blockquote><p>adb shell dumpsys package xx</p></blockquote><p>查看设备所有应用包名[-s: 系统应用 -3:三方应用]</p><blockquote><p>adb shell pm list packages -s/3</p></blockquote><p>删除应用信息</p><blockquote><p>adb shell pm clear xx</p></blockquote><a id="more"></a><p>查看当前焦点页面</p><blockquote><p>adb shell dumpsys activity activities | egrep -in –color ‘ResumedActivity’<br>adb shell dumpsys window | egrep -in –color ‘mCurrentFocus’</p></blockquote><p>查看应用内存</p><blockquote><p>adb shell dumpsys meminfo xx</p></blockquote><p>查看设备分辨率</p><blockquote><p>adb shell dumpsys window display | egrep -in –color ‘init’</p></blockquote><p>获取系统属性</p><blockquote><p>adb shell getprop xx</p></blockquote><p>搜索日志</p><blockquote><p>adb logcat | egrep -in –color ‘xx’</p></blockquote><p>截图</p><blockquote><p>adb shell screencap -p /sdcard<br>录屏<br>adb shell screenrecord /sdcard/video.mp4</p></blockquote><p>导出外部存储数据库</p><blockquote><p>adb pull /data/data/com.android.providers.media/databases/external.db</p></blockquote>]]></content>
       
       
       <categories>
           
-          <category> Design-patterns </category>
+          <category> Tools </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> Design-patterns </tag>
+            <tag> Tools </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hexo常用命令</title>
+      <link href="/pages/e585a9.html"/>
+      <url>/pages/e585a9.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a>Hexo常用命令</h2><p>安装</p><blockquote><p>npm install hexo -g</p></blockquote><p>升级</p><blockquote><p>npm update hexo -g</p></blockquote><p>初始化</p><blockquote><p>hexo init</p></blockquote><p>清理缓存</p><blockquote><p>hexo clean</p></blockquote><p>生成静态网页</p><blockquote><p>hexo g</p></blockquote><p>开始部署</p><blockquote><p>hexo d</p></blockquote><p>编译+部署本地</p><blockquote><p>hexo s -g</p></blockquote><p>编译+部署远端</p><blockquote><p>hexo d -g</p></blockquote><p>新建文章(文件)</p><a id="more"></a><blockquote><p>hexo new “newPage”</p></blockquote><p>新建页面(目录+文件)</p><blockquote><p>hexo new page “newPage”</p></blockquote><p>安装常用插件</p><blockquote><p>npm install hexo-browsersync –save<br>npm install hexo-deployer-git —save<br>npm install hexo-symbols-count-time —save<br>npm install hexo-generator-search —save<br>npm install hexo-abbrlink –save</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Tools </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Tools </tag>
             
         </tags>
       
