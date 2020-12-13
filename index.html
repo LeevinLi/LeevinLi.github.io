@@ -186,7 +186,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">3</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">5</span></a>
 
   </li>
       
@@ -208,7 +208,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">3</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">5</span></a>
 
   </li>
       
@@ -283,7 +283,7 @@
   
   
   <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/eb9daab9.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/52c457.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leevin Li">
@@ -297,7 +297,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
             
-            <a href="/pages/eb9daab9.html" class="post-title-link" itemprop="url">Git常用命令</a>
+            <a href="/pages/52c457.html" class="post-title-link" itemprop="url">Handler-源码解析</a>
           
         </h1>
 
@@ -312,19 +312,11 @@
                 
               
 
-              <time title="创建时间：2019-09-09 08:28:11" itemprop="dateCreated datePublished" datetime="2019-09-09T08:28:11+08:00">2019-09-09</time>
+              <time title="创建时间：2020-12-13 13:47:45 / 修改时间：13:58:36" itemprop="dateCreated datePublished" datetime="2020-12-13T13:47:45+08:00">2020-12-13</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:02:39" itemprop="dateModified" datetime="2019-10-13T22:02:39+08:00">2019-10-13</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -333,7 +325,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a></span>
 
                 
                 
@@ -342,7 +334,7 @@
           
 
           
-            <span id="/pages/eb9daab9.html" class="post-meta-item leancloud_visitors" data-flag-title="Git常用命令" title="阅读次数">
+            <span id="/pages/52c457.html" class="post-meta-item leancloud_visitors" data-flag-title="Handler-源码解析" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -360,7 +352,7 @@
       
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/pages/eb9daab9.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/eb9daab9.html" itemprop="commentCount"></span></a>
+    <a title="valine" href="/pages/52c457.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/52c457.html" itemprop="commentCount"></span></a>
   </span>
   
   
@@ -372,7 +364,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>3.4k</span>
+              <span>4.4k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -382,7 +374,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>3 分钟</span>
+              <span>4 分钟</span>
             </span>
           
 
@@ -395,22 +387,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="SSH创建秘钥"><a href="#SSH创建秘钥" class="headerlink" title="SSH创建秘钥"></a>SSH创建秘钥</h2><ul>
-<li><p>1.以下命令行会在/your_home_path/.ssh目录下创建id_rsa名称的公钥和私钥，命令执行后会提示输入passphrase，可一路回车使用默认设置。</p>
-<blockquote>
-<p>ssh-keygen -t rsa -C “<a href="mailto:xx@xx.com" target="_blank" rel="noopener">xx@xx.com</a>”</p>
-</blockquote>
-</li>
-<li><p>2.可指定秘钥名称的创建方式</p>
-<blockquote>
-<p>ssh-keygen -t rsa -f id_rsa_xx -C “<a href="mailto:xx@xx.com" target="_blank" rel="noopener">xx@xx.com</a>“</p>
-</blockquote>
-</li>
-</ul>
+          <h1 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h1><p>Handler机制是Android系统中非常核心的线程间通讯机制，广泛的应用在系统通知中，包括常见的Activity生命周期的通知，手势通知等等<br>Handler机制Java层涉及主要的四个类包括Handler，Looper，MessageQueue，Message；该机制构成了典型的生产者和消费者模型<br>接下来将对Java层的运行原理进行分析</p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/pages/eb9daab9.html#more" rel="contents">
+              <a class="btn" href="/pages/52c457.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -439,7 +420,7 @@
   
   
   <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/59ae5ad8.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/3f239b.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leevin Li">
@@ -453,7 +434,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
             
-            <a href="/pages/59ae5ad8.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-原型模式</a>
+            <a href="/pages/3f239b.html" class="post-title-link" itemprop="url">Android-R-启动流程分析</a>
           
         </h1>
 
@@ -468,19 +449,11 @@
                 
               
 
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
+              <time title="创建时间：2020-12-13 13:46:45 / 修改时间：13:59:58" itemprop="dateCreated datePublished" datetime="2020-12-13T13:46:45+08:00">2020-12-13</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:46" itemprop="dateModified" datetime="2019-10-13T22:14:46+08:00">2019-10-13</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -489,7 +462,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a></span>
 
                 
                 
@@ -498,7 +471,7 @@
           
 
           
-            <span id="/pages/59ae5ad8.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-原型模式" title="阅读次数">
+            <span id="/pages/3f239b.html" class="post-meta-item leancloud_visitors" data-flag-title="Android-R-启动流程分析" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -516,7 +489,7 @@
       
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/pages/59ae5ad8.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/59ae5ad8.html" itemprop="commentCount"></span></a>
+    <a title="valine" href="/pages/3f239b.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/3f239b.html" itemprop="commentCount"></span></a>
   </span>
   
   
@@ -528,7 +501,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>4</span>
+              <span>12k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -538,7 +511,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>1 分钟</span>
+              <span>11 分钟</span>
             </span>
           
 
@@ -551,726 +524,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h2>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/bae0704a.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leevin Li">
-      <meta itemprop="description" content="Android、Flutter">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leevin' Bolg">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/pages/bae0704a.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-策略模式</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:23" itemprop="dateModified" datetime="2019-10-13T22:14:23+08:00">2019-10-13</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            <span id="/pages/bae0704a.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-策略模式" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/pages/bae0704a.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/bae0704a.html" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">本文字数：</span>
-              
-              <span>563</span>
-            </span>
-          
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              
-              <span>1 分钟</span>
-            </span>
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h2><ul>
-<li><p>概述<br>属于<strong>行为模式</strong>，它定义了算法家族，分别封装起来，让它们之间可以相互替换，此模式让算法的变化，不会影响到使用算法的客户。</p>
-</li>
-<li><p>解析<br>1.策略模式是一种定义一系列算法的方法，从概念上来看，所有这些算法完成的都是相同的工作，只是实现不同，它可以以相同的方式调用所有的算法，减少了各种算法类与使用算法类之间的耦合。<br>2.策略模式的Strategy类层次为Context定义了一系列的可供重用的算法或行为，继承有助于提取出这些算法中的公共功能。<br>3.简化了单元测试，每个算法都有自己的类，可以通过自己的接口单独测试。<br>4.当不同的行为堆砌在一个类中时，就很难避免使用条件语句来选择合适的行为，将这些行为封装在一个个独立的Strategy类中，可以在使用这些行为的类中消除条件语句。</p>
-</li>
-<li><p>实例程序<br>超市里不同优惠活动方案，包括满减(满300返100)和折扣(8折)。</p>
-</li>
-<li><p>UML结构图<br><img src="/images/uml-strategy.png" alt="UML图"></p>
-</li>
-<li><p>源码实例<br>Android源码中动画设置时间插值器时就使用了策略模式。不同类型的插值器都实现了<code>TimeInterpolator</code>接口，在具体<code>AccelerateDecelerateInterpolator</code>，<code>LinearInterpolator</code>，<code>DecelerateInterpolator</code>类中实现了不同的运动轨迹，从而使用者可以根据不同的场景选择不同的插值器实现不同的动画效果。</p>
-</li>
-</ul>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/dd0dc550.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leevin Li">
-      <meta itemprop="description" content="Android、Flutter">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leevin' Bolg">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/pages/dd0dc550.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-模板模式</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:34" itemprop="dateModified" datetime="2019-10-13T22:14:34+08:00">2019-10-13</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            <span id="/pages/dd0dc550.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-模板模式" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/pages/dd0dc550.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/dd0dc550.html" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">本文字数：</span>
-              
-              <span>4</span>
-            </span>
-          
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              
-              <span>1 分钟</span>
-            </span>
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="模板模式"><a href="#模板模式" class="headerlink" title="模板模式"></a>模板模式</h2>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/eeda6823.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leevin Li">
-      <meta itemprop="description" content="Android、Flutter">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leevin' Bolg">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/pages/eeda6823.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-简单工厂模式</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:29" itemprop="dateModified" datetime="2019-10-13T22:14:29+08:00">2019-10-13</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            <span id="/pages/eeda6823.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-简单工厂模式" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/pages/eeda6823.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/eeda6823.html" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">本文字数：</span>
-              
-              <span>690</span>
-            </span>
-          
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              
-              <span>1 分钟</span>
-            </span>
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><ul>
-<li><p>概述<br>属于<strong>创建式模式</strong>，它提供了创建对象的一种方式，封装内部的业务，对外围只提供创建操作的对象工厂。</p>
-</li>
-<li><p>解析<br>运用面向对象的编程思想，通过封装，继承，多态可降低程序的耦合性，提高程序的可维护，可复用，可扩展性，使得程序更加灵活。</p>
-</li>
-<li><p>实例程序<br>计算器加减乘除四种计算方式，通过OperationFactory来创建计算方式。</p>
-</li>
-<li><p>UML结构图<br><img src="/images/uml-simple-factory.png" alt="UML图"></p>
-</li>
-<li><p>源码实例</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (getBaseContext() == <span class="keyword">null</span>) &#123;  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"System services not available to Activities before onCreate()"</span>);</span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//........  </span></span><br><span class="line">    <span class="keyword">if</span> (WINDOW_SERVICE.equals(name)) &#123;  </span><br><span class="line">        <span class="keyword">return</span> mWindowManager;  </span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SEARCH_SERVICE.equals(name)) &#123;  </span><br><span class="line">        ensureSearchManager();  </span><br><span class="line">        <span class="keyword">return</span> mSearchManager;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//.......  </span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.getSystemService(name);  </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/b74e18cd.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leevin Li">
-      <meta itemprop="description" content="Android、Flutter">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leevin' Bolg">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/pages/b74e18cd.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-装饰器模式</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:52" itemprop="dateModified" datetime="2019-10-13T22:14:52+08:00">2019-10-13</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            <span id="/pages/b74e18cd.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-装饰器模式" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/pages/b74e18cd.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/b74e18cd.html" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">本文字数：</span>
-              
-              <span>5</span>
-            </span>
-          
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              
-              <span>1 分钟</span>
-            </span>
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="装饰器模式"><a href="#装饰器模式" class="headerlink" title="装饰器模式"></a>装饰器模式</h2>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/9f6c8519.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leevin Li">
-      <meta itemprop="description" content="Android、Flutter">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leevin' Bolg">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/pages/9f6c8519.html" class="post-title-link" itemprop="url">大话设计模式读书笔记-六大设计原则</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-13 22:14:41" itemprop="dateModified" datetime="2019-10-13T22:14:41+08:00">2019-10-13</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Design-patterns/" itemprop="url" rel="index"><span itemprop="name">Design-patterns</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            <span id="/pages/9f6c8519.html" class="post-meta-item leancloud_visitors" data-flag-title="大话设计模式读书笔记-六大设计原则" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-        
-      
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/pages/9f6c8519.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/9f6c8519.html" itemprop="commentCount"></span></a>
-  </span>
-  
-  
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">本文字数：</span>
-              
-              <span>197</span>
-            </span>
-          
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              
-              <span>1 分钟</span>
-            </span>
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h2><ul>
-<li>描述<br>一个类应用仅有一个引起它变化的原因。</li>
-<li>例子</li>
-</ul><h2 id="开放-封闭原则"><a href="#开放-封闭原则" class="headerlink" title="开放-封闭原则"></a>开放-封闭原则</h2><ul>
-<li>描述<br>软件实体（类，模块，函数等）应该可以扩展，但是不可修改。对于扩展是开放的，对于更改是封闭的。</li>
-<li>例子</li>
-</ul><h2 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h2><ul>
-<li>描述<br>高层次模块不应该依赖低层模块，两个都应该依赖抽象。 抽象不应该依赖细节，细节应该依赖抽象。</li>
-<li>例子  </li>
-</ul>
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>Android R 版本系统，从长按开机键到核心系统服务的启动流程分析</p><h1 id="启动架构图"><a href="#启动架构图" class="headerlink" title="启动架构图"></a>启动架构图</h1><p><img src="../imgs/android-booting-process.jpg" alt="系统架构图"></p><h1 id="启动流程分析"><a href="#启动流程分析" class="headerlink" title="启动流程分析"></a>启动流程分析</h1><h2 id="Boot-Rom"><a href="#Boot-Rom" class="headerlink" title="Boot Rom"></a>Boot Rom</h2><p>按下电源键，设备上电，开始运行存在于ROM中的代码，将BootLoader加载至RAM(内存)</p><h2 id="Boot-Loader"><a href="#Boot-Loader" class="headerlink" title="Boot Loader"></a>Boot Loader</h2><p>Bootloader核心任务是初始化内存，把boot.img(kernel + ramdisk)从flash上copy到RAM，然后交出对CPU的控制权给kernel</p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/pages/9f6c8519.html#more" rel="contents">
+              <a class="btn" href="/pages/3f239b.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1299,7 +557,7 @@
   
   
   <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/e585a8.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/a330b8.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leevin Li">
@@ -1313,7 +571,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
             
-            <a href="/pages/e585a8.html" class="post-title-link" itemprop="url">ADB常用命令</a>
+            <a href="/pages/a330b8.html" class="post-title-link" itemprop="url">ActivityManagerServer-原理解析</a>
           
         </h1>
 
@@ -1328,19 +586,11 @@
                 
               
 
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
+              <time title="创建时间：2020-12-13 13:46:45 / 修改时间：14:00:32" itemprop="dateCreated datePublished" datetime="2020-12-13T13:46:45+08:00">2020-12-13</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-17 18:52:29" itemprop="dateModified" datetime="2020-02-17T18:52:29+08:00">2020-02-17</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -1349,7 +599,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a></span>
 
                 
                 
@@ -1358,7 +608,7 @@
           
 
           
-            <span id="/pages/e585a8.html" class="post-meta-item leancloud_visitors" data-flag-title="ADB常用命令" title="阅读次数">
+            <span id="/pages/a330b8.html" class="post-meta-item leancloud_visitors" data-flag-title="ActivityManagerServer-原理解析" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -1376,7 +626,7 @@
       
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/pages/e585a8.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/e585a8.html" itemprop="commentCount"></span></a>
+    <a title="valine" href="/pages/a330b8.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/a330b8.html" itemprop="commentCount"></span></a>
   </span>
   
   
@@ -1388,7 +638,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>621</span>
+              <span>7</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -1411,19 +661,531 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="ADB常用命令"><a href="#ADB常用命令" class="headerlink" title="ADB常用命令"></a>ADB常用命令</h2><p>安装与卸载</p><blockquote>
-<p>adb install -r xx<br>adb uninstall xx</p>
-</blockquote><p>查看应用信息</p><blockquote>
-<p>adb shell dumpsys package xx</p>
-</blockquote><p>查看设备所有应用包名[-s: 系统应用 -3:三方应用]</p><blockquote>
-<p>adb shell pm list packages -s/3</p>
-</blockquote><p>删除应用信息</p><blockquote>
-<p>adb shell pm clear xx</p>
-</blockquote>
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/93215c.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/93215c.html" class="post-title-link" itemprop="url">Binder-原理解析</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:46:45 / 修改时间：14:00:42" itemprop="dateCreated datePublished" datetime="2020-12-13T13:46:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/93215c.html" class="post-meta-item leancloud_visitors" data-flag-title="Binder-原理解析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/93215c.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/93215c.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>7</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>1 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/da4ce9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/da4ce9.html" class="post-title-link" itemprop="url">Java-线程</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:37:45 / 修改时间：14:01:24" itemprop="dateCreated datePublished" datetime="2020-12-13T13:37:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/da4ce9.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-线程" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/da4ce9.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/da4ce9.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>7</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>1 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/794b71.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/794b71.html" class="post-title-link" itemprop="url">Java-动态代理</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:36:45 / 修改时间：14:00:58" itemprop="dateCreated datePublished" datetime="2020-12-13T13:36:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/794b71.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-动态代理" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/794b71.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/794b71.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>7</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>1 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/bef77a.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/bef77a.html" class="post-title-link" itemprop="url">Java-反射</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:35:45 / 修改时间：13:54:54" itemprop="dateCreated datePublished" datetime="2020-12-13T13:35:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/bef77a.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-反射" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/bef77a.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/bef77a.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>2.2k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>2 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>反射就是在运行状态中,对于任意一个类,都能够知道这个类的所有属性和方法;对于任意一个对象,都能够调用它的任意方法和属性;并且能改变它的属性。是Java被视为动态语言的关键。<br>Java反射机制主要提供了以下功能：</p><ul>
+<li>在运行时构造任意一个类的对象</li>
+<li>在运行时获取或者修改任意一个类所具有的成员变量和方法</li>
+<li>在运行时调用任意一个对象的方法（属性）</li>
+</ul>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/pages/e585a8.html#more" rel="contents">
+              <a class="btn" href="/pages/bef77a.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1452,7 +1214,7 @@
   
   
   <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/e585a9.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/bt9791.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leevin Li">
@@ -1466,7 +1228,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
             
-            <a href="/pages/e585a9.html" class="post-title-link" itemprop="url">Hexo常用命令</a>
+            <a href="/pages/bt9791.html" class="post-title-link" itemprop="url">Java-泛型</a>
           
         </h1>
 
@@ -1481,19 +1243,11 @@
                 
               
 
-              <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
+              <time title="创建时间：2020-12-13 13:35:45 / 修改时间：13:51:41" itemprop="dateCreated datePublished" datetime="2020-12-13T13:35:45+08:00">2020-12-13</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-17 18:53:41" itemprop="dateModified" datetime="2020-02-17T18:53:41+08:00">2020-02-17</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -1502,7 +1256,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
 
                 
                 
@@ -1511,7 +1265,7 @@
           
 
           
-            <span id="/pages/e585a9.html" class="post-meta-item leancloud_visitors" data-flag-title="Hexo常用命令" title="阅读次数">
+            <span id="/pages/bt9791.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-泛型" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -1529,7 +1283,7 @@
       
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/pages/e585a9.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/e585a9.html" itemprop="commentCount"></span></a>
+    <a title="valine" href="/pages/bt9791.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/bt9791.html" itemprop="commentCount"></span></a>
   </span>
   
   
@@ -1541,7 +1295,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>375</span>
+              <span>1.1k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -1564,27 +1318,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a>Hexo常用命令</h2><p>安装</p><blockquote>
-<p>npm install hexo -g</p>
-</blockquote><p>升级</p><blockquote>
-<p>npm update hexo -g</p>
-</blockquote><p>初始化</p><blockquote>
-<p>hexo init</p>
-</blockquote><p>清理缓存</p><blockquote>
-<p>hexo clean</p>
-</blockquote><p>生成静态网页</p><blockquote>
-<p>hexo g</p>
-</blockquote><p>开始部署</p><blockquote>
-<p>hexo d</p>
-</blockquote><p>编译+部署本地</p><blockquote>
-<p>hexo s -g</p>
-</blockquote><p>编译+部署远端</p><blockquote>
-<p>hexo d -g</p>
-</blockquote><p>新建文章(文件)</p>
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>Java 泛型（Generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该机制允许编译时检测非法的类型<br>泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数</p><h1 id="泛型类型"><a href="#泛型类型" class="headerlink" title="泛型类型"></a>泛型类型</h1><h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyOnWriteArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/pages/e585a9.html#more" rel="contents">
+              <a class="btn" href="/pages/bt9791.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1608,9 +1346,280 @@
   </article>
 
     
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/c83589.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/c83589.html" class="post-title-link" itemprop="url">Java-注解</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:35:45 / 修改时间：13:54:35" itemprop="dateCreated datePublished" datetime="2020-12-13T13:35:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/c83589.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-注解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/c83589.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/c83589.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>1.2k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>1 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h5 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h5><ul>
+<li>Java 注解（Annotation）又称 Java 标注，是 JDK5.0 引入的一种注释机制。 注解是元数据的一种形式，提供有关<br>于程序但不属于程序本身的数据。注解对它们注解的代码的操作没有直接影响</li>
+</ul><h5 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.SOURCE)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> LayoutID &#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">resId</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/pages/c83589.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/1.8e+69.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/pages/1.8e+69.html" class="post-title-link" itemprop="url">Java-类加载</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-13 13:35:45 / 修改时间：14:01:20" itemprop="dateCreated datePublished" datetime="2020-12-13T13:35:45+08:00">2020-12-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/pages/1.8e+69.html" class="post-meta-item leancloud_visitors" data-flag-title="Java-类加载" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/pages/1.8e+69.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/pages/1.8e+69.html" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>7</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>1 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
   </div>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
           </div>
@@ -1657,7 +1666,7 @@
         
           <a href="/archives">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1670,7 +1679,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -1683,7 +1692,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -1759,12 +1768,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">6k</span>
+    <span title="站点总字数">30k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5 分钟</span>
+    <span title="站点阅读时长">28 分钟</span>
 </div>
 
         
