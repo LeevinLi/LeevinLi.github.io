@@ -125,6 +125,7 @@
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
@@ -169,7 +170,8 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/archives/">
+        
           <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
@@ -245,7 +247,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/e585a9.html">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/pages/e585a8.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -258,7 +260,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/pages/e585a9.html" class="post-title-link" itemprop="url">Hexo常用命令</a>
+          <a href="/pages/e585a8.html" class="post-title-link" itemprop="url">ADB常用命令</a>
         </h2>
 
         <div class="post-meta-container">
@@ -269,14 +271,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2019-09-08 08:27:04" itemprop="dateCreated datePublished" datetime="2019-09-08T08:27:04+08:00">2019-09-08</time>
+      <time title="创建时间：2019-03-06 08:27:04" itemprop="dateCreated datePublished" datetime="2019-03-06T08:27:04+08:00">2019-03-06</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-19 23:37:55" itemprop="dateModified" datetime="2020-12-19T23:37:55+08:00">2020-12-19</time>
+        <time title="修改时间：2021-01-09 22:17:17" itemprop="dateModified" datetime="2021-01-09T22:17:17+08:00">2021-01-09</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,7 +291,7 @@
     </span>
 
   
-    <span id="/pages/e585a9.html" class="post-meta-item leancloud_visitors" data-flag-title="Hexo常用命令" title="阅读次数">
+    <span id="/pages/e585a8.html" class="post-meta-item leancloud_visitors" data-flag-title="ADB常用命令" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -303,7 +305,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>391</span>
+      <span>553</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -321,53 +323,53 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a>Hexo常用命令</h2><p>安装</p>
+          <h2 id="ADB常用命令"><a href="#ADB常用命令" class="headerlink" title="ADB常用命令"></a>ADB常用命令</h2><p>安装与卸载</p>
 <blockquote>
-<p>npm install hexo -g</p>
+<p>adb install -r xx<br>adb uninstall xx</p>
 </blockquote>
-<p>Hexo升级</p>
+<p>查看应用信息</p>
 <blockquote>
-<p>npm update hexo -g</p>
+<p>adb shell dumpsys package xx</p>
 </blockquote>
-<p>npm升级</p>
+<p>查看设备所有应用包名[-s: 系统应用 -3:三方应用]</p>
 <blockquote>
-<p>npm install -g npm</p>
+<p>adb shell pm list packages -s/3</p>
 </blockquote>
-<p>初始化</p>
+<p>删除应用信息</p>
 <blockquote>
-<p>hexo init</p>
+<p>adb shell pm clear xx</p>
 </blockquote>
-<p>清理缓存</p>
+<p>查看当前焦点页面</p>
 <blockquote>
-<p>hexo clean</p>
+<p>adb shell dumpsys activity activities | egrep -in –color ‘ResumedActivity’<br>adb shell dumpsys window | egrep -in –color ‘mCurrentFocus’</p>
 </blockquote>
-<p>生成静态网页</p>
+<p>查看应用内存</p>
 <blockquote>
-<p>hexo g</p>
+<p>adb shell dumpsys meminfo xx</p>
 </blockquote>
-<p>开始部署</p>
+<p>查看设备分辨率</p>
 <blockquote>
-<p>hexo d</p>
+<p>adb shell dumpsys window display | egrep -in –color ‘init’</p>
 </blockquote>
-<p>编译+部署本地</p>
+<p>获取系统属性</p>
 <blockquote>
-<p>hexo s -g</p>
+<p>adb shell getprop xx</p>
 </blockquote>
-<p>编译+部署远端</p>
+<p>搜索日志</p>
 <blockquote>
-<p>hexo d -g</p>
+<p>adb logcat | egrep -in –color ‘xx’</p>
 </blockquote>
-<p>新建文章(文件)</p>
+<p>截图</p>
 <blockquote>
-<p>hexo new “newPage”</p>
+<p>adb shell screencap -p /sdcard</p>
 </blockquote>
-<p>新建页面(目录+文件)</p>
+<p>录屏</p>
 <blockquote>
-<p>hexo new page “newPage”</p>
+<p>adb shell screenrecord /sdcard/video.mp4</p>
 </blockquote>
-<p>安装常用插件</p>
+<p>导出外部存储数据库</p>
 <blockquote>
-<p>npm install hexo-browsersync –save<br>npm install hexo-deployer-git —-save<br>npm install hexo-symbols-count-time —-save<br>npm install hexo-generator-search —-save<br>npm install hexo-abbrlink –save<br>npm install bluebird –save</p>
+<p>adb pull /data/data/com.android.providers.media/databases/external.db</p>
 </blockquote>
 
       
@@ -422,7 +424,7 @@
 
 <div class="copyright">
   &copy; 2019 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -433,13 +435,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">27k</span>
+    <span title="站点总字数">37k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">33 分钟</span>
   </span>
 </div>
 

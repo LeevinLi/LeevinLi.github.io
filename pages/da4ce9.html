@@ -23,18 +23,20 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yoursite.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="简要描述待更新">
+<meta name="description" content="简要描述 进程与线程 进程：是操作系统进行资源分配的最小单位，是程序在计算机上的一次执行活动，进程内的线程 线程：是CPU调度的最小单位，必须寄生于进程存在   并发与并行 并发：单位时间内，执行的任务量，如单位时间内CPU执行了多少次任务 并行：同时执行的任务，比如一个人边吃饭边看电视，如多线程的模式    线程的创建方式 new Thread方式  12345678910111213publi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java-线程">
 <meta property="og:url" content="http://yoursite.com/pages/da4ce9.html">
 <meta property="og:site_name" content="Leevin&#39; Bolg">
-<meta property="og:description" content="简要描述待更新">
+<meta property="og:description" content="简要描述 进程与线程 进程：是操作系统进行资源分配的最小单位，是程序在计算机上的一次执行活动，进程内的线程 线程：是CPU调度的最小单位，必须寄生于进程存在   并发与并行 并发：单位时间内，执行的任务量，如单位时间内CPU执行了多少次任务 并行：同时执行的任务，比如一个人边吃饭边看电视，如多线程的模式    线程的创建方式 new Thread方式  12345678910111213publi">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-13T05:37:45.000Z">
-<meta property="article:modified_time" content="2020-12-13T06:01:24.000Z">
+<meta property="og:image" content="http://yoursite.com/images/java-thread-lifecycle.png">
+<meta property="article:published_time" content="2021-01-06T05:37:45.000Z">
+<meta property="article:modified_time" content="2021-01-09T14:04:14.980Z">
 <meta property="article:author" content="Leevin Li">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/java-thread-lifecycle.png">
 
 
 <link rel="canonical" href="http://yoursite.com/pages/da4ce9.html">
@@ -128,6 +130,7 @@
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
@@ -159,7 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%A6%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简要描述</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%A6%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简要描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">线程的创建方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95-Callable%EF%BC%8CFuture"><span class="nav-number">3.</span> <span class="nav-text">扩展{Callable，Future}</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">4.</span> <span class="nav-text">线程的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">常用方法</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -173,7 +176,8 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/archives/">
+        
           <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
@@ -273,10 +277,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-12-13 13:37:45 / 修改时间：14:01:24" itemprop="dateCreated datePublished" datetime="2020-12-13T13:37:45+08:00">2020-12-13</time>
+      <time title="创建时间：2021-01-06 13:37:45" itemprop="dateCreated datePublished" datetime="2021-01-06T13:37:45+08:00">2021-01-06</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-09 22:04:14" itemprop="dateModified" datetime="2021-01-09T22:04:14+08:00">2021-01-09</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -302,14 +312,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>7</span>
+      <span>4.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -320,7 +330,47 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>待更新</p>
+        <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><ul>
+<li>进程与线程<ul>
+<li>进程：是操作系统进行资源分配的最小单位，是程序在计算机上的一次执行活动，进程内的线程</li>
+<li>线程：是CPU调度的最小单位，必须寄生于进程存在</li>
+</ul>
+</li>
+<li>并发与并行<ul>
+<li>并发：单位时间内，执行的任务量，如单位时间内CPU执行了多少次任务</li>
+<li>并行：同时执行的任务，比如一个人边吃饭边看电视，如多线程的模式</li>
+</ul>
+</li>
+</ul>
+<h1 id="线程的创建方式"><a href="#线程的创建方式" class="headerlink" title="线程的创建方式"></a>线程的创建方式</h1><ul>
+<li>new Thread方式  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkTask</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动线程</span></span><br><span class="line"><span class="keyword">new</span> WorkTask().start()</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>implements Runnable方式  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkRunner</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Runner传递给Thread并启动线程</span></span><br><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> WorkRunner()).start();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="扩展-Callable，Future"><a href="#扩展-Callable，Future" class="headerlink" title="扩展{Callable，Future}"></a>扩展{Callable，Future}</h1>前面两种方式存在一个明显的缺陷就是当线程执行完毕后无法获取返回值<br>因此从Java1.5开始提供了Callable,Future来解决这一问题  </li>
+</ul>
+<p><strong>备注</strong>：Callable并不属于线程的另一种创建方式，它只是对Runnable的一种封装，具体可见Thread源码注释和下面的的使用分析<br>// android-29\java\lang\Thread.java$#75行<br>// *There are two ways to create a new thread of execution</p>
+<ul>
+<li>使用方法<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReturnTask</span> <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;return task&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动并获取结果</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startReturnTask</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">        Future&lt;String&gt; future = executorService.submit(<span class="keyword">new</span> ReturnTask());</span><br><span class="line">        String result = future.get(); <span class="comment">//阻塞</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>原理分析<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.Callable接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callable</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">V <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.Future接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Future</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">cancel</span><span class="params">(<span class="keyword">boolean</span> mayInterruptIfRunning)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isCancelled</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isDone</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">//阻塞方法</span></span><br><span class="line">    <span class="function">V <span class="title">get</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, ExecutionException</span>;</span><br><span class="line">    <span class="function">V <span class="title">get</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//3.RunnableFuture接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RunnableFuture</span>&lt;<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">Runnable</span>, <span class="title">Future</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//4.FutureTask，RunnableFuture接口的实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FutureTask</span>&lt;<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">RunnableFuture</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FutureTask</span><span class="params">(Callable&lt;V&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (callable == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">        <span class="keyword">this</span>.state = NEW;       <span class="comment">// ensure visibility of callable</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//此处是重点，FutureTask将两者统一</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">FutureTask</span><span class="params">(Runnable runnable, V result)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//FutureTask内部构造函数中将Runnable通过RunnableAdapter统一转换成Callable，将两者进行统一</span></span><br><span class="line">        <span class="keyword">this</span>.callable = Executors.callable(runnable, result);</span><br><span class="line">        <span class="keyword">this</span>.state = NEW;       <span class="comment">// ensure visibility of callable</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Executors.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Callable&lt;T&gt; <span class="title">callable</span><span class="params">(Runnable task, T result)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RunnableAdapter&lt;T&gt;(task, result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过以上4点，可知FutureTask是RunnableFuture接口的实现，因此它既能处理Runnable又能处理Callable，FutureTask是一个综合体的角色</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//5.再来看看ExecutorService.submit()方法内部实现</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Runnable task, T result)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    <span class="keyword">return</span> ftask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    <span class="keyword">return</span> ftask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过上面两个方法可以看出，submit方法内部将传入的Task统一转成RunnableFuture，也正是FutureTask  </span></span><br><span class="line"><span class="comment">//而在使用处我们就可以通过FutureTask.get()方法获取到Task的返回值，但是值得注意的是get()为阻塞方法，应该合理使用避免ANR产生</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期"></a>线程的生命周期</h1><img src="../../images/java-thread-lifecycle.png" alt="生命周期"></li>
+</ul>
+<p>线程的生命周期共有六种状态，可在源码Thread#State内部类中进行查看</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Thread.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">State</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//新创建的线程，还未调用start()</span></span><br><span class="line">    NEW,</span><br><span class="line">    <span class="comment">//Java程序中将就绪(READY)和运行中(RUNNING)两种状态统称成为运行(RUNNABLE)状态</span></span><br><span class="line">    RUNNABLE,</span><br><span class="line">    <span class="comment">//线程阻塞于锁</span></span><br><span class="line">    BLOCKED,</span><br><span class="line">    <span class="comment">//进入等待状态，需要其他线程唤醒或中断</span></span><br><span class="line">    WAITING,</span><br><span class="line">    <span class="comment">//进入特定时间的等待状态，达到时间则自行返回</span></span><br><span class="line">    TIMED_WAITING,</span><br><span class="line">    <span class="comment">//线程已经执行结束</span></span><br><span class="line">    TERMINATED;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h1><ul>
+<li><p>Thread.start()<br>线程进入就绪队列等待分配CPU，待分配到CPU后就会执行run()方法，start()不能重复调用</p>
+</li>
+<li><p>Thread.yield()<br>让出CPU使用权，给其他线程执行机会，RUNNING -&gt; READY</p>
+</li>
+<li><p>Thread.join()<br>在当前线程中插入其他线程执行过程，插入线程执行完毕后当前线程继续执行t2.join()后的代码块<br>插入线程执行过程中当前线程处于等待状态(WAITING/TIMED_WAITING)，join可设置最长等待执行时间</p>
+</li>
+<li><p>Thread.sleep()/sleep(long millis)<br>用来暂停当前线程的执行，通知线程调度器把当前线程在指定的时间内置为WAITING状态，当wait时间到达，线程状态重新变为READY并等待CPU再次调度执行</p>
+</li>
+<li><p>Thread.interrupt()<br>将线程的中断状态置为true，只是通知线程可以中断，并不会强行中断正在执行的线程<br>如果线程处于阻塞状态interrupt()方法被调用时，中断状态会重置为false，并抛出InterruptedException异常  </p>
+</li>
+<li><p>Object.wait()/wait(long millis)<br>将线程放入等待池(Waiting Pool)，同时放弃对象锁，wait后返还对象锁<br>线程必须拥有当前对象的锁，因此wait()需在synchronized块中调用，则否会抛出IllegalMonitorStateException异常  </p>
+</li>
+<li><p>Object.notify()/notifyAll()<br>唤醒当前对象等待池中等待的第一个/所有线程<br>notify()/notifyAll()也必须拥有相同对象锁，需在synchronized块中调用，否则也会抛出IllegalMonitorStateException异常</p>
+</li>
+</ul>
 
     </div>
 
@@ -355,14 +405,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/pages/794b71.html" rel="prev" title="Java-动态代理">
-                  <i class="fa fa-chevron-left"></i> Java-动态代理
+                <a href="/pages/52c457.html" rel="prev" title="Handler-源码解析">
+                  <i class="fa fa-chevron-left"></i> Handler-源码解析
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/pages/93215c.html" rel="next" title="Binder-原理解析">
-                  Binder-原理解析 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -405,7 +452,7 @@
 
 <div class="copyright">
   &copy; 2019 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -416,13 +463,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">27k</span>
+    <span title="站点总字数">37k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">33 分钟</span>
   </span>
 </div>
 
