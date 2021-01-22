@@ -23,18 +23,20 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yoursite.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="什么是 MarkdownMarkdown 是一种方便记忆、书写的纯文本标记语言，用户可以使用这些标记符号以最小的输入代价生成极富表现力的文档：譬如您正在阅读的这份文档。它使用简单的符号标记不同的标题，分割不同的段落，粗体 或者 斜体 某些文字，更棒的是，它还可以 1. 制作一份待办事宜 Todo 列表  支持以 PDF 格式导出文稿  改进 Cmd 渲染算法，使用局部渲染技术提高渲染效率  新增">
+<meta name="description" content="什么是 MarkdownMarkdown 是一种方便记忆、书写的纯文本标记语言，可以使用这些标记符号以最小的输入代价生成极富表现力的文档：它可以使用简单的符号标记不同的标题，分割不同的段落，粗体 或者 斜体 某些文字，更棒的是，它还可以轻松的制作表格，支持多种插件达到更好的表达的方式 语法标题支持H1，H2，H3，H4，H5，H6，使用#号个数代表各个标题的字号大小 123456# H1  ##">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Markdown编辑阅读器">
 <meta property="og:url" content="http://yoursite.com/pages/d4194c.html">
 <meta property="og:site_name" content="Leevin&#39; Bolg">
-<meta property="og:description" content="什么是 MarkdownMarkdown 是一种方便记忆、书写的纯文本标记语言，用户可以使用这些标记符号以最小的输入代价生成极富表现力的文档：譬如您正在阅读的这份文档。它使用简单的符号标记不同的标题，分割不同的段落，粗体 或者 斜体 某些文字，更棒的是，它还可以 1. 制作一份待办事宜 Todo 列表  支持以 PDF 格式导出文稿  改进 Cmd 渲染算法，使用局部渲染技术提高渲染效率  新增">
+<meta property="og:description" content="什么是 MarkdownMarkdown 是一种方便记忆、书写的纯文本标记语言，可以使用这些标记符号以最小的输入代价生成极富表现力的文档：它可以使用简单的符号标记不同的标题，分割不同的段落，粗体 或者 斜体 某些文字，更棒的是，它还可以轻松的制作表格，支持多种插件达到更好的表达的方式 语法标题支持H1，H2，H3，H4，H5，H6，使用#号个数代表各个标题的字号大小 123456# H1  ##">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/java-thread-local-structure.png">
 <meta property="article:published_time" content="2019-04-23T00:55:08.000Z">
-<meta property="article:modified_time" content="2021-01-09T14:18:03.127Z">
+<meta property="article:modified_time" content="2021-01-22T23:36:45.748Z">
 <meta property="article:author" content="Leevin Li">
 <meta property="article:tag" content="Tools">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/java-thread-local-structure.png">
 
 
 <link rel="canonical" href="http://yoursite.com/pages/d4194c.html">
@@ -126,9 +128,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">17</span></a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
@@ -160,7 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Markdown"><span class="nav-number">1.</span> <span class="nav-text">什么是 Markdown</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%B6%E4%BD%9C%E4%B8%80%E4%BB%BD%E5%BE%85%E5%8A%9E%E4%BA%8B%E5%AE%9C-Todo-%E5%88%97%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">1. 制作一份待办事宜 Todo 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B9%A6%E5%86%99%E4%B8%80%E4%B8%AA%E8%B4%A8%E8%83%BD%E5%AE%88%E6%81%92%E5%85%AC%E5%BC%8F-LaTeX"><span class="nav-number">1.2.</span> <span class="nav-text">2. 书写一个质能守恒公式[^LaTeX]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%AB%98%E4%BA%AE%E4%B8%80%E6%AE%B5%E4%BB%A3%E7%A0%81-code"><span class="nav-number">1.3.</span> <span class="nav-text">3. 高亮一段代码[^code]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%AB%98%E6%95%88%E7%BB%98%E5%88%B6-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.4.</span> <span class="nav-text">4. 高效绘制 流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%AB%98%E6%95%88%E7%BB%98%E5%88%B6-%E5%BA%8F%E5%88%97%E5%9B%BE"><span class="nav-number">1.5.</span> <span class="nav-text">5. 高效绘制 序列图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E9%AB%98%E6%95%88%E7%BB%98%E5%88%B6-%E7%94%98%E7%89%B9%E5%9B%BE"><span class="nav-number">1.6.</span> <span class="nav-text">6. 高效绘制 甘特图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E7%BB%98%E5%88%B6%E8%A1%A8%E6%A0%BC"><span class="nav-number">1.7.</span> <span class="nav-text">7. 绘制表格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%9B%B4%E8%AF%A6%E7%BB%86%E8%AF%AD%E6%B3%95%E8%AF%B4%E6%98%8E"><span class="nav-number">1.8.</span> <span class="nav-text">8. 更详细语法说明</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Markdown"><span class="nav-number">1.</span> <span class="nav-text">什么是 Markdown</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">标题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H1"><span class="nav-number">3.</span> <span class="nav-text">H1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#H2"><span class="nav-number">3.1.</span> <span class="nav-text">H2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#H3"><span class="nav-number">3.1.1.</span> <span class="nav-text">H3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#H4"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">H4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#H5"><span class="nav-number">3.1.1.1.1.</span> <span class="nav-text">H5</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#H6"><span class="nav-number">3.1.1.1.1.1.</span> <span class="nav-text">H6</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%82%E6%AC%A1%E6%A0%87%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">层次标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC"><span class="nav-number">3.3.</span> <span class="nav-text">表格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E9%AB%98%E4%BA%AE"><span class="nav-number">3.4.</span> <span class="nav-text">代码高亮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">3.5.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%89%B2%E7%BA%BF"><span class="nav-number">3.6.</span> <span class="nav-text">分割线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">3.7.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E5%AD%97%E5%8A%A0%E5%BC%BA"><span class="nav-number">3.8.</span> <span class="nav-text">文字加强</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E9%98%B6%E6%8F%92%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">高阶插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mermaid"><span class="nav-number">4.1.</span> <span class="nav-text">mermaid</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -176,20 +178,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -283,7 +285,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-09 22:18:03" itemprop="dateModified" datetime="2021-01-09T22:18:03+08:00">2021-01-09</time>
+        <time title="修改时间：2021-01-23 07:36:45" itemprop="dateModified" datetime="2021-01-23T07:36:45+08:00">2021-01-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -310,14 +312,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
+      <span>2.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -328,46 +330,167 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="什么是-Markdown"><a href="#什么是-Markdown" class="headerlink" title="什么是 Markdown"></a>什么是 Markdown</h2><p>Markdown 是一种方便记忆、书写的纯文本标记语言，用户可以使用这些标记符号以最小的输入代价生成极富表现力的文档：譬如您正在阅读的这份文档。它使用简单的符号标记不同的标题，分割不同的段落，<strong>粗体</strong> 或者 <em>斜体</em> 某些文字，更棒的是，它还可以</p>
-<h3 id="1-制作一份待办事宜-Todo-列表"><a href="#1-制作一份待办事宜-Todo-列表" class="headerlink" title="1. 制作一份待办事宜 Todo 列表"></a>1. 制作一份待办事宜 <a target="_blank" rel="noopener" href="https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#13-%E5%BE%85%E5%8A%9E%E4%BA%8B%E5%AE%9C-todo-%E5%88%97%E8%A1%A8">Todo 列表</a></h3><ul>
-<li><input disabled="" type="checkbox"> 支持以 PDF 格式导出文稿</li>
-<li><input disabled="" type="checkbox"> 改进 Cmd 渲染算法，使用局部渲染技术提高渲染效率</li>
-<li><input checked="" disabled="" type="checkbox"> 新增 Todo 列表功能</li>
-<li><input checked="" disabled="" type="checkbox"> 修复 LaTex 公式渲染问题</li>
-<li><input checked="" disabled="" type="checkbox"> 新增 LaTex 公式编号功能</li>
+        <h1 id="什么是-Markdown"><a href="#什么是-Markdown" class="headerlink" title="什么是 Markdown"></a>什么是 Markdown</h1><p>Markdown 是一种方便记忆、书写的纯文本标记语言，可以使用这些标记符号以最小的输入代价生成极富表现力的文档：它可以使用简单的符号标记不同的标题，分割不同的段落，<strong>粗体</strong> 或者 <em>斜体</em> 某些文字，更棒的是，它还可以轻松的制作表格，支持多种插件达到更好的表达的方式</p>
+<h1 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h1><h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>支持H1，H2，H3，H4，H5，H6，使用#号个数代表各个标题的字号大小</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># H1  </span><br><span class="line">## H2</span><br><span class="line">### H3</span><br><span class="line">#### H4</span><br><span class="line">##### H5  </span><br><span class="line">###### H6</span><br></pre></td></tr></table></figure>
+<h1 id="H1"><a href="#H1" class="headerlink" title="H1"></a>H1</h1><h2 id="H2"><a href="#H2" class="headerlink" title="H2"></a>H2</h2><h3 id="H3"><a href="#H3" class="headerlink" title="H3"></a>H3</h3><h4 id="H4"><a href="#H4" class="headerlink" title="H4"></a>H4</h4><h5 id="H5"><a href="#H5" class="headerlink" title="H5"></a>H5</h5><h6 id="H6"><a href="#H6" class="headerlink" title="H6"></a>H6</h6><a id="more"></a>
+
+<h2 id="层次标题"><a href="#层次标题" class="headerlink" title="层次标题"></a>层次标题</h2><p>无序列表使用星号(<em>)，加号(+)减号(-)或者阿拉伯数字加小数点作为列表标记，通常情况下(\</em> + -)可交替使用，标记后间隔空格在填写内容</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* 第一项</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>第一项</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ 第二项</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h3 id="2-书写一个质能守恒公式-LaTeX"><a href="#2-书写一个质能守恒公式-LaTeX" class="headerlink" title="2. 书写一个质能守恒公式[^LaTeX]"></a>2. 书写一个质能守恒公式[^LaTeX]</h3><p>$$E=mc^2$$</p>
-<h3 id="3-高亮一段代码-code"><a href="#3-高亮一段代码-code" class="headerlink" title="3. 高亮一段代码[^code]"></a>3. 高亮一段代码[^code]</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@requires_authorization</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># A comment</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;hello world&#x27;</span></span><br></pre></td></tr></table></figure>
-<h3 id="4-高效绘制-流程图"><a href="#4-高效绘制-流程图" class="headerlink" title="4. 高效绘制 流程图"></a>4. 高效绘制 <a target="_blank" rel="noopener" href="https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#7-%E6%B5%81%E7%A8%8B%E5%9B%BE">流程图</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">st&#x3D;&gt;start: Start</span><br><span class="line">op&#x3D;&gt;operation: Your Operation</span><br><span class="line">cond&#x3D;&gt;condition: Yes or No?</span><br><span class="line">e&#x3D;&gt;end</span><br><span class="line"></span><br><span class="line">st-&gt;op-&gt;cond</span><br><span class="line">cond(yes)-&gt;e</span><br><span class="line">cond(no)-&gt;op</span><br></pre></td></tr></table></figure>
-<h3 id="5-高效绘制-序列图"><a href="#5-高效绘制-序列图" class="headerlink" title="5. 高效绘制 序列图"></a>5. 高效绘制 <a target="_blank" rel="noopener" href="https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#8-%E5%BA%8F%E5%88%97%E5%9B%BE">序列图</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Alice-&gt;Bob: Hello Bob, how are you?</span><br><span class="line">Note right of Bob: Bob thinks</span><br><span class="line">Bob--&gt;Alice: I am good thanks!</span><br></pre></td></tr></table></figure>
-<h3 id="6-高效绘制-甘特图"><a href="#6-高效绘制-甘特图" class="headerlink" title="6. 高效绘制 甘特图"></a>6. 高效绘制 <a target="_blank" rel="noopener" href="https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#9-%E7%94%98%E7%89%B9%E5%9B%BE">甘特图</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">title 项目开发流程</span><br><span class="line">section 项目确定</span><br><span class="line">    需求分析       :a1, 2016-06-22, 3d</span><br><span class="line">    可行性报告     :after a1, 5d</span><br><span class="line">    概念验证       : 5d</span><br><span class="line">section 项目实施</span><br><span class="line">    概要设计      :2016-07-05  , 5d</span><br><span class="line">    详细设计      :2016-07-08, 10d</span><br><span class="line">    编码          :2016-07-15, 10d</span><br><span class="line">    测试          :2016-07-22, 5d</span><br><span class="line">section 发布验收</span><br><span class="line">    发布: 2d</span><br><span class="line">    验收: 3d</span><br></pre></td></tr></table></figure>
-<h3 id="7-绘制表格"><a href="#7-绘制表格" class="headerlink" title="7. 绘制表格"></a>7. 绘制表格</h3><table>
+<ul>
+<li><p>第二项</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- 第三项</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ul>
+<li>第三项</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 一</span><br><span class="line">2. 二</span><br><span class="line">3. 三</span><br></pre></td></tr></table></figure>
+<ol>
+<li>一</li>
+<li>二</li>
+<li>三</li>
+</ol>
+<p>层次列表，可在子项前间隔两个空格，即可生成缩进</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- [ ] Write</span><br><span class="line">- [x] Coding</span><br><span class="line">  - [x] Java</span><br><span class="line">  - [x] CSS</span><br><span class="line">  - [x] JavaScript</span><br><span class="line">- [ ] Read</span><br></pre></td></tr></table></figure>
+<ul>
+<li><input disabled="" type="checkbox"> Write</li>
+</ul>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Coding<ol>
+<li><input checked="" disabled="" type="checkbox"> Java</li>
+<li><input checked="" disabled="" type="checkbox"> CSS</li>
+<li><input checked="" disabled="" type="checkbox"> JavaScript</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><input disabled="" type="checkbox"> Read</li>
+</ul>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| id | name | address |</span><br><span class="line">| ---- | ---- | ---- |</span><br><span class="line">| 1  |  Alen | shanghai/pudong</span><br><span class="line">| 2  |  Jusy | xian</span><br></pre></td></tr></table></figure>
+<table>
 <thead>
 <tr>
-<th>项目</th>
-<th align="right">价格</th>
-<th align="center">数量</th>
+<th>id</th>
+<th>name</th>
+<th>address</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>计算机</td>
-<td align="right">$1600</td>
-<td align="center">5</td>
+<td>1</td>
+<td>Alen</td>
+<td>shanghai/pudong</td>
 </tr>
 <tr>
-<td>手机</td>
-<td align="right">$12</td>
-<td align="center">12</td>
-</tr>
-<tr>
-<td>管线</td>
-<td align="right">$1</td>
-<td align="center">234</td>
+<td>2</td>
+<td>Jusy</td>
+<td>xian</td>
 </tr>
 </tbody></table>
-<h3 id="8-更详细语法说明"><a href="#8-更详细语法说明" class="headerlink" title="8. 更详细语法说明"></a>8. 更详细语法说明</h3><p>想要查看更详细的语法说明，可以参考我们准备的 [Cmd Markdown 简明语法手册][1]，进阶用户可以参考 [Cmd Markdown 高阶语法手册][2] 了解更多高级功能。</p>
-<p>总而言之，不同于其它 <em>所见即所得</em> 的编辑器：你只需使用键盘专注于书写文本内容，就可以生成印刷级的排版格式，省却在键盘和工具栏之间来回切换，调整内容和格式的麻烦。<strong>Markdown 在流畅的书写和印刷级的阅读体验之间找到了平衡。</strong> 目前它已经成为世界上最大的技术分享网站 GitHub 和 技术问答网站 StackOverFlow 的御用书写格式。</p>
+<p>对齐方式</p>
+<ul>
+<li>左对齐:—  </li>
+<li>居中对齐:–:</li>
+<li>右对齐—:  </li>
+</ul>
+<p>下面以右对齐方式为例</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| id | name | address |</span><br><span class="line">| ---: | ---: | ---: |</span><br><span class="line">| 1  |  Alen | shanghai/pudong</span><br><span class="line">| 2  |  Jusy | xian</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th align="right">id</th>
+<th align="right">name</th>
+<th align="right">address</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td align="right">Alen</td>
+<td align="right">shanghai/pudong</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td align="right">Jusy</td>
+<td align="right">xian</td>
+</tr>
+</tbody></table>
+<h2 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h2><p>可以使用```加语言包裹内容达到代码高亮的效果</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">\```java</span><br><span class="line"> @Override</span><br><span class="line"> public int getItemCount() &#123;</span><br><span class="line">     return mMediaItems == null ? 0 : mMediaItems.size();</span><br><span class="line"> &#125;</span><br><span class="line">\```</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mMediaItems == <span class="keyword">null</span> ? <span class="number">0</span> : mMediaItems.size();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; 最外层</span><br><span class="line">&gt; &gt; 第一层嵌套</span><br><span class="line">&gt; &gt; &gt; 第二层嵌套</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>最外层</p>
+<blockquote>
+<p>第一层嵌套</p>
+<blockquote>
+<p>第二层嵌套</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; 区块中使用列表</span><br><span class="line">&gt; 1. 第一项</span><br><span class="line">&gt; 2. 第二项</span><br><span class="line">&gt; + 第一项</span><br><span class="line">&gt; + 第二项</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>区块中使用列表</p>
+<ol>
+<li>第一项</li>
+<li>第二项</li>
+</ol>
+<ul>
+<li>第一项</li>
+<li>第二项</li>
+</ul>
+</blockquote>
+<p>行内代码块</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">使用 `html` 表示行内代码块</span><br></pre></td></tr></table></figure>
+<p>使用 <code>html</code> 表示行内代码块</p>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><p>使用三个或更多的 *、- 或 _ 来添加分隔线</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">***</span><br><span class="line">---</span><br><span class="line">___</span><br></pre></td></tr></table></figure>
 <hr>
+<hr>
+<hr>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>网页链接</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Google](http://www.google.com/)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="http://www.google.com/">Google</a></p>
+<p>图片链接</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![结构图](../../images/java-thread-local-structure.png)</span><br></pre></td></tr></table></figure>
+<p><img src="../../images/java-thread-local-structure.png" alt="结构图"></p>
+<h2 id="文字加强"><a href="#文字加强" class="headerlink" title="文字加强"></a>文字加强</h2><p>使用**加粗文字</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">演示**加粗**</span><br></pre></td></tr></table></figure>
+<p>演示<strong>加粗</strong></p>
+<p>使用*添加斜体文字</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">演示*文字*</span><br></pre></td></tr></table></figure>
+<p>演示<em>斜体</em></p>
+<p>使用~~添加删除线</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">演示~~删除线~~</span><br></pre></td></tr></table></figure>
+<p>演示<del>删除线</del></p>
+<h1 id="高阶插件"><a href="#高阶插件" class="headerlink" title="高阶插件"></a>高阶插件</h1><h2 id="mermaid"><a href="#mermaid" class="headerlink" title="mermaid"></a>mermaid</h2><p><a target="_blank" rel="noopener" href="https://mermaid-js.github.io/mermaid/#/">mermaid官网链接</a></p>
+<p>类图示例</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">\&lt;pre class=&quot;mermaid&quot;&gt;classDiagram</span><br><span class="line">class Square~Shape~&#123;</span><br><span class="line">    int id</span><br><span class="line">    List~int~ position</span><br><span class="line">    setPoints(List~int~ points)</span><br><span class="line">    getPoints() List~int~</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Square : -List~string~ messages</span><br><span class="line">Square : +setMessages(List~string~ messages)</span><br><span class="line">Square : +getMessages() List~string~</span><br><span class="line">\&lt;/pre&gt;</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">classDiagram
+class Square~Shape~{
+    int id
+    List~int~ position
+    setPoints(List~int~ points)
+    getPoints() List~int~
+}
+
+Square : -List~string~ messages
+Square : +setMessages(List~string~ messages)
+Square : +getMessages() List~string~</pre>
+<p>甘特图示例</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">\&lt;pre class=&quot;mermaid&quot;&gt;    gantt</span><br><span class="line">        title A Gantt Diagram</span><br><span class="line">        dateFormat  YYYY-MM</span><br><span class="line">        section Section</span><br><span class="line">        A task           :a1, 2014-01, 30d</span><br><span class="line">        Another task     :after a1  , 20d</span><br><span class="line">        section Another</span><br><span class="line">        Task in sec      :2014-01  , 12d</span><br><span class="line">        another task     : 24d</span><br><span class="line">\&lt;/pre&gt;</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">    gantt
+        title A Gantt Diagram
+        dateFormat  YYYY-MM
+        section Section
+        A task           :a1, 2014-01, 30d
+        Another task     :after a1  , 20d
+        section Another
+        Task in sec      :2014-01  , 12d
+        another task     : 24d</pre>
+
 
     </div>
 
@@ -463,13 +586,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">36k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">33 分钟</span>
+    <span title="站点阅读时长">37 分钟</span>
   </span>
 </div>
 

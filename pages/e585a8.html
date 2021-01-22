@@ -23,15 +23,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yoursite.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="ADB常用命令安装与卸载  adb install -r xxadb uninstall xx  查看应用信息  adb shell dumpsys package xx  查看设备所有应用包名[-s: 系统应用 -3:三方应用]  adb shell pm list packages -s&#x2F;3  删除应用信息  adb shell pm clear xx  查看当前焦点页面  adb shell">
+<meta name="description" content="ADB常用命令其他常用安装与卸载  adb install -r xxadb uninstall xx  查看系统所有属性  adb shell getprop  获取系统属性  adb shell getprop xx  搜索日志  adb logcat | egrep -in –color ‘xx’  截图  adb shell screencap -p &#x2F;sdcard  录屏  adb sh">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ADB常用命令">
 <meta property="og:url" content="http://yoursite.com/pages/e585a8.html">
 <meta property="og:site_name" content="Leevin&#39; Bolg">
-<meta property="og:description" content="ADB常用命令安装与卸载  adb install -r xxadb uninstall xx  查看应用信息  adb shell dumpsys package xx  查看设备所有应用包名[-s: 系统应用 -3:三方应用]  adb shell pm list packages -s&#x2F;3  删除应用信息  adb shell pm clear xx  查看当前焦点页面  adb shell">
+<meta property="og:description" content="ADB常用命令其他常用安装与卸载  adb install -r xxadb uninstall xx  查看系统所有属性  adb shell getprop  获取系统属性  adb shell getprop xx  搜索日志  adb logcat | egrep -in –color ‘xx’  截图  adb shell screencap -p &#x2F;sdcard  录屏  adb sh">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-03-06T00:27:04.000Z">
-<meta property="article:modified_time" content="2021-01-15T14:04:23.714Z">
+<meta property="article:modified_time" content="2021-01-22T23:35:54.110Z">
 <meta property="article:author" content="Leevin Li">
 <meta property="article:tag" content="Tools">
 <meta name="twitter:card" content="summary">
@@ -126,9 +126,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">17</span></a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
@@ -160,7 +160,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ADB%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">ADB常用命令</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ADB%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">ADB常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%B8%B8%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">其他常用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pm%E7%9B%B8%E5%85%B3"><span class="nav-number">1.2.</span> <span class="nav-text">pm相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dumpsys%E7%9B%B8%E5%85%B3"><span class="nav-number">1.3.</span> <span class="nav-text">dumpsys相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#am%E7%9B%B8%E5%85%B3"><span class="nav-number">1.4.</span> <span class="nav-text">am相关</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -176,20 +176,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -283,7 +283,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-15 22:04:23" itemprop="dateModified" datetime="2021-01-15T22:04:23+08:00">2021-01-15</time>
+        <time title="修改时间：2021-01-23 07:35:54" itemprop="dateModified" datetime="2021-01-23T07:35:54+08:00">2021-01-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -310,7 +310,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>553</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -328,35 +328,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="ADB常用命令"><a href="#ADB常用命令" class="headerlink" title="ADB常用命令"></a>ADB常用命令</h2><p>安装与卸载</p>
+        <h1 id="ADB常用命令"><a href="#ADB常用命令" class="headerlink" title="ADB常用命令"></a>ADB常用命令</h1><h2 id="其他常用"><a href="#其他常用" class="headerlink" title="其他常用"></a>其他常用</h2><p>安装与卸载</p>
 <blockquote>
 <p>adb install -r xx<br>adb uninstall xx</p>
 </blockquote>
-<p>查看应用信息</p>
+<p>查看系统所有属性</p>
 <blockquote>
-<p>adb shell dumpsys package xx</p>
-</blockquote>
-<p>查看设备所有应用包名[-s: 系统应用 -3:三方应用]</p>
-<blockquote>
-<p>adb shell pm list packages -s/3</p>
-</blockquote>
-<p>删除应用信息</p>
-<blockquote>
-<p>adb shell pm clear xx</p>
-</blockquote>
-<p>查看当前焦点页面</p>
-<blockquote>
-<p>adb shell dumpsys activity activities | egrep -in –color ‘ResumedActivity’<br>adb shell dumpsys window | egrep -in –color ‘mCurrentFocus’</p>
-</blockquote>
-<a id="more"></a>
-
-<p>查看应用内存</p>
-<blockquote>
-<p>adb shell dumpsys meminfo xx</p>
-</blockquote>
-<p>查看设备分辨率</p>
-<blockquote>
-<p>adb shell dumpsys window display | egrep -in –color ‘init’</p>
+<p>adb shell getprop</p>
 </blockquote>
 <p>获取系统属性</p>
 <blockquote>
@@ -374,10 +352,62 @@
 <blockquote>
 <p>adb shell screenrecord /sdcard/video.mp4</p>
 </blockquote>
+<p>导出Trace文件</p>
+<blockquote>
+<p>adb pull /data/anr .</p>
+</blockquote>
 <p>导出外部存储数据库</p>
 <blockquote>
 <p>adb pull /data/data/com.android.providers.media/databases/external.db</p>
 </blockquote>
+<hr>
+<a id="more"></a>
+
+<h2 id="pm相关"><a href="#pm相关" class="headerlink" title="pm相关"></a>pm相关</h2><p>查看设备所有应用包名[-s: 系统应用 -3:三方应用]</p>
+<blockquote>
+<p>adb shell pm list packages -s/3</p>
+</blockquote>
+<p>删除应用信息</p>
+<blockquote>
+<p>adb shell pm clear xx</p>
+</blockquote>
+<hr>
+<h2 id="dumpsys相关"><a href="#dumpsys相关" class="headerlink" title="dumpsys相关"></a>dumpsys相关</h2><p>查看应用信息</p>
+<blockquote>
+<p>adb shell dumpsys package xx</p>
+</blockquote>
+<p>查看应用内存</p>
+<blockquote>
+<p>adb shell dumpsys meminfo xx</p>
+</blockquote>
+<p>查看设备分辨率</p>
+<blockquote>
+<p>adb shell dumpsys window display | egrep -in –color ‘init’</p>
+</blockquote>
+<p>查看当前焦点页面</p>
+<blockquote>
+<p>adb shell dumpsys activity activities | egrep -in –color ‘ResumedActivity’<br>adb shell dumpsys window | egrep -in –color ‘mCurrentFocus’</p>
+</blockquote>
+<hr>
+<h2 id="am相关"><a href="#am相关" class="headerlink" title="am相关"></a>am相关</h2><p>启动某页面</p>
+<blockquote>
+<p>adb shell am start -n xx/.xx</p>
+</blockquote>
+<p>启动页面并携带ACTION，mimetype，data信息</p>
+<blockquote>
+<p>adb shell am start -n xx/.xx -a android.intent.action.VIEW -t image/* -d content://media/external/images/media/2017</p>
+</blockquote>
+<p>发起ACTION并携带参数</p>
+<blockquote>
+<p>adb shell am start -a android.intent.action.VIEW -d file:// -t image/* -c android.intent.category.DEFAULT</p>
+</blockquote>
+<p>启动页面并携带自定义参数</p>
+<blockquote>
+<p>adb shell am start -n com.gallery20/com.transsion.libstoryalbum.MemAlbumDetailActivity -e key value</p>
+</blockquote>
+<p>Intent参数规范<br>|||||||||<br>|:—–  |:—–   |:—–   |:—–   |:—–   |:—–   |:—–   |:—–   |<br>|参数 |-e/-es   |-esn|-ez|    -ei|-el|-ef|    -eu|<br>|类型 |String   |(String)null|    boolean|    int|    long|    float|    uri|</p>
+<p>更多可参考官方说明 <a target="_blank" rel="noopener" href="https://developer.android.com/studio/command-line/adb#IntentSpec">Android Developer</a></p>
+<hr>
 
     </div>
 
@@ -470,13 +500,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">36k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">33 分钟</span>
+    <span title="站点阅读时长">37 分钟</span>
   </span>
 </div>
 
