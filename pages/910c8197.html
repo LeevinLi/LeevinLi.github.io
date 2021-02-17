@@ -23,15 +23,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"leevinli.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="sleep()与wait()区别 sleep()简介  sleep()方法用于线程控制，调用后使当前线程进入TIMED_WAITING状态，此状态下会让出CPU的资源并且不释放锁(sleep()与锁没直接关系)   sleep()方法是Thread类中的静态方法，它不能改变对象的机锁，当在一个Synchronized块中调用sleep()方法时，线程虽然休眠了但是对象的机锁并没有被释放，其他线程无">
+<meta name="description" content="sleep()与wait()区别 sleep()简介 sleep()方法用于线程控制，调用后使当前线程进入TIMED_WAITING状态，此状态下会让出CPU的资源并且不释放锁(sleep()与锁没直接关系)   sleep()方法是Thread类中的静态方法，它不能改变对象的机锁，当在一个Synchronized块中调用sleep()方法时，线程虽然休眠了但是对象的机锁并没有被释放，其他线程无法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java-线程-sleep与wait区别">
 <meta property="og:url" content="https://leevinli.github.io/pages/910c8197.html">
 <meta property="og:site_name" content="Leevin&#39; Bolg">
-<meta property="og:description" content="sleep()与wait()区别 sleep()简介  sleep()方法用于线程控制，调用后使当前线程进入TIMED_WAITING状态，此状态下会让出CPU的资源并且不释放锁(sleep()与锁没直接关系)   sleep()方法是Thread类中的静态方法，它不能改变对象的机锁，当在一个Synchronized块中调用sleep()方法时，线程虽然休眠了但是对象的机锁并没有被释放，其他线程无">
+<meta property="og:description" content="sleep()与wait()区别 sleep()简介 sleep()方法用于线程控制，调用后使当前线程进入TIMED_WAITING状态，此状态下会让出CPU的资源并且不释放锁(sleep()与锁没直接关系)   sleep()方法是Thread类中的静态方法，它不能改变对象的机锁，当在一个Synchronized块中调用sleep()方法时，线程虽然休眠了但是对象的机锁并没有被释放，其他线程无法">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-08T11:24:45.000Z">
-<meta property="article:modified_time" content="2021-01-22T23:50:53.639Z">
+<meta property="article:modified_time" content="2021-02-17T02:13:12.158Z">
 <meta property="article:author" content="Leevin Li">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
@@ -283,7 +283,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-23 07:50:53" itemprop="dateModified" datetime="2021-01-23T07:50:53+08:00">2021-01-23</time>
+        <time title="修改时间：2021-02-17 10:13:12" itemprop="dateModified" datetime="2021-02-17T10:13:12+08:00">2021-02-17</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -329,13 +329,16 @@
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="sleep-与wait-区别"><a href="#sleep-与wait-区别" class="headerlink" title="sleep()与wait()区别"></a>sleep()与wait()区别</h1><ul>
-<li><p>sleep()简介</p>
-<ol>
+<li>sleep()简介<ol>
 <li>sleep()方法用于线程控制，调用后使当前线程进入<code>TIMED_WAITING</code>状态，此状态下会<code>让出CPU的资源</code>并且<code>不释放锁</code>(sleep()与锁没直接关系)  </li>
 <li>sleep()方法是Thread类中的静态方法，它不能改变对象的机锁，当在一个Synchronized块中调用sleep()方法时，线程虽然休眠了但是对象的机锁并没有被释放，其他线程无法访问这个对象  </li>
 <li>sleep()休眠时间到达后，当前线程会进入<code>READY</code>状态，等待CUP调度执行  </li>
 </ol>
 </li>
+</ul>
+<a id="more"></a>
+
+<ul>
 <li><p>wait()简介</p>
 <ol>
 <li>wait()用于线程间的通信，调用后使当前线程进入<code>TIMED_WAITING</code>状态，此状态下会<code>让出CPU的资源</code>并且<code>释放对象的机锁</code>(暂时失去机锁，wait(long timeout)时间达到后返还对象机锁)供其他线程使用  </li>
