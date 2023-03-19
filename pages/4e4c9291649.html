@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"leevinli.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="NDK交叉编译可简单理解为，一套代码借助NDK所提供的工具链可以编译成不同平台可执行的产物更加专业的解释可参考：Cross compiler WIKI 名词解释：ABI: Application Binary Interface 1.CPU与ABI的对应关系   CPU架构&#x2F;ABI类型 armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64 时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NDK交叉编译">
+<meta property="og:url" content="https://leevinli.github.io/pages/4e4c9291649.html">
+<meta property="og:site_name" content="Leevin&#39; Bolg">
+<meta property="og:description" content="NDK交叉编译可简单理解为，一套代码借助NDK所提供的工具链可以编译成不同平台可执行的产物更加专业的解释可参考：Cross compiler WIKI 名词解释：ABI: Application Binary Interface 1.CPU与ABI的对应关系   CPU架构&#x2F;ABI类型 armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64 时间">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-08T12:02:04.000Z">
+<meta property="article:modified_time" content="2021-12-31T15:08:55.719Z">
+<meta property="article:author" content="Leevin Li">
+<meta property="article:tag" content="NDK">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leevinli.github.io/pages/4e4c9291649.html">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>NDK交叉编译 | Leevin' Bolg</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Leevin' Bolg</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">56</span></a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">NDK交叉编译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-CPU%E4%B8%8EABI%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">1.1.</span> <span class="nav-text">1.CPU与ABI的对应关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ABI%E4%B8%8E%E9%A2%84%E7%BC%96%E8%AF%91%E5%AE%8F%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">1.2.</span> <span class="nav-text">2.ABI与预编译宏对应关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B8%B8%E7%94%A8%E9%80%82%E9%85%8D%E6%96%B9%E6%A1%88"><span class="nav-number">1.3.</span> <span class="nav-text">3.常用适配方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%B7%A5%E5%85%B7%E9%93%BE%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">4.工具链的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E9%9D%99%E6%80%81%E5%BA%93%E7%9A%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.5.</span> <span class="nav-text">5.静态库的编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%8A%A8%E6%80%81%E5%BA%93%E7%9A%84%E7%BC%96%E8%AF%91"><span class="nav-number">1.6.</span> <span class="nav-text">6.动态库的编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="nav-number">1.7.</span> <span class="nav-text">7.查看结果文件信息</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leevin Li"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Leevin Li</p>
+  <div class="site-description" itemprop="description">Android、Flutter</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/LeevinLi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;LeevinLi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:x.leevin@gmail.com" title="E-Mail → mailto:x.leevin@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://androidxref.com/" title="http:&#x2F;&#x2F;androidxref.com" rel="noopener" target="_blank">Androidxref</a>
+        </li>
+    </ul>
+  </div>
+
+        </section>
+      </div>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/LeevinLi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://leevinli.github.io/pages/4e4c9291649.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NDK交叉编译
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-08 20:02:04" itemprop="dateCreated datePublished" datetime="2021-05-08T20:02:04+08:00">2021-05-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-12-31 23:08:55" itemprop="dateModified" datetime="2021-12-31T23:08:55+08:00">2021-12-31</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NDK/" itemprop="url" rel="index"><span itemprop="name">NDK</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/pages/4e4c9291649.html" class="post-meta-item leancloud_visitors" data-flag-title="NDK交叉编译" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="NDK交叉编译"><a href="#NDK交叉编译" class="headerlink" title="NDK交叉编译"></a>NDK交叉编译</h1><p>可简单理解为，一套代码借助NDK所提供的工具链可以编译成不同平台可执行的产物<br>更加专业的解释可参考：<br><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cross_compiler">Cross compiler WIKI</a></p>
+<p>名词解释：<br>ABI: Application Binary Interface</p>
+<h2 id="1-CPU与ABI的对应关系"><a href="#1-CPU与ABI的对应关系" class="headerlink" title="1.CPU与ABI的对应关系"></a>1.CPU与ABI的对应关系</h2><table>
+<thead>
+<tr>
+<th align="left">CPU架构/ABI类型</th>
+<th align="left">armeabi</th>
+<th align="left">armeabi-v7a</th>
+<th align="left">arm64-v8a</th>
+<th align="left">x86</th>
+<th align="left">x86_64</th>
+<th align="left">mips</th>
+<th align="left">mips64</th>
+<th align="left">时间</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ARMv5</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">ARMv7</td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2010年起</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">ARMv8</td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2014年起</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">x86</td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2011年起</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">x86_64</td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">2014年起</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">MIPS</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">支持</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">MIPS64</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">支持</td>
+<td align="left">支持</td>
+<td align="left">2014年起</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<p>arm64-v8a   : 第8代、64位ARM处理器，常被用在各品牌高端机型上<br>armeabi-v7a : 第7代及以上的 ARM 处理器。2011年15月以后的大部分Android设备都使用它<br>armeabi     : 第5代、第6代的ARM处理器，早期的Android手机用的比较多<br>x86         : 平板、模拟器用得比较多<br>x86_64      : 64位的平板  </p>
+<h2 id="2-ABI与预编译宏对应关系"><a href="#2-ABI与预编译宏对应关系" class="headerlink" title="2.ABI与预编译宏对应关系"></a>2.ABI与预编译宏对应关系</h2><table>
+<thead>
+<tr>
+<th align="left">ABI</th>
+<th align="left">宏</th>
+<th align="left">NDK工具链目录</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">armeabi</td>
+<td align="left">__arm__</td>
+<td align="left">$TOOLCHAIN/arm-linux-androideabi-</td>
+</tr>
+<tr>
+<td align="left">armeabi-v7</td>
+<td align="left">__arm__</td>
+<td align="left">$TOOLCHAIN/arm-linux-androideabi-</td>
+</tr>
+<tr>
+<td align="left">arm64-v8a</td>
+<td align="left">__aarch64__</td>
+<td align="left">$TOOLCHAIN/aarch64-linux-android-</td>
+</tr>
+<tr>
+<td align="left">x86</td>
+<td align="left">__i386__</td>
+<td align="left">$TOOLCHAIN/x86-</td>
+</tr>
+<tr>
+<td align="left">x86_64</td>
+<td align="left">__x86_64__</td>
+<td align="left">$TOOLCHAIN/x86_64-</td>
+</tr>
+</tbody></table>
+<h2 id="3-常用适配方案"><a href="#3-常用适配方案" class="headerlink" title="3.常用适配方案"></a>3.常用适配方案</h2><ul>
+<li><p>方案一：只适配armeabi<br>优点:基本上适配了全部CPU架构（除了淘汰的mips和mips_64）<br>缺点：性能低，相当于在绝大多数手机上都是需要辅助ABI或动态转码来兼容  </p>
+</li>
+<li><p>方案二：只适配 armeabi-v7a<br>同理方案一，只是又筛掉了一部分老旧设备,在性能和兼容二者中比较平衡  </p>
+</li>
+<li><p>方案三: 只适配 arm64-v8<br>优点: 性能最佳<br>缺点： 只能运行在arm64-v8上，要放弃部分老旧设备用户<br>这三种方案都是可以的，现在的大厂APP适配中，这三种都有，大部分是前2种方案<br>具体选哪一种就看自己的考量了，以性能换兼容就arm64-v8，以兼容换性能armeabi，二者稍微平衡一点的就armeabi-v7a  </p>
+</li>
+</ul>
+<h2 id="4-工具链的配置"><a href="#4-工具链的配置" class="headerlink" title="4.工具链的配置"></a>4.工具链的配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux系统环境</span></span><br><span class="line"><span class="comment"># .profile中加入以下内容</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NDK HOME</span></span><br><span class="line"><span class="built_in">export</span> NDK_HOME_17=<span class="string">&quot;xx/android-ndk/android-ndk-r17c&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># NDK BUILD VERSION</span></span><br><span class="line"><span class="built_in">export</span> NDK_BUILD_VERSION=<span class="string">&quot;21&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定不同架构所需的GCC目录</span></span><br><span class="line"><span class="built_in">export</span> GCC_ARM=<span class="string">&quot;<span class="variable">$&#123;NDK_HOME_17&#125;</span>/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin&quot;</span></span><br><span class="line"><span class="built_in">export</span> GCC_ARM64=<span class="string">&quot;<span class="variable">$&#123;NDK_HOME_17&#125;</span>/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># GCC命令所需的参数</span></span><br><span class="line"><span class="comment"># --sysroot =&gt; 指定函数库目录, 系统会到 xx/usr/lib 目录下查找库文件</span></span><br><span class="line"><span class="comment"># -isystem  =&gt; 指定头文件查找目录</span></span><br><span class="line"><span class="built_in">export</span> GCC_CFG_ARM=<span class="string">&quot;--sysroot=<span class="variable">$&#123;NDK_HOME_17&#125;</span>/platforms/android-<span class="variable">$&#123;NDK_BUILD_VERSION&#125;</span>/arch-arm -isystem <span class="variable">$&#123;NDK_HOME_17&#125;</span>/sysroot/usr/include -isystem <span class="variable">$&#123;NDK_HOME_17&#125;</span>/sysroot/usr/include/arm-linux-androideabi&quot;</span></span><br><span class="line"><span class="built_in">export</span> GCC_CFG_ARM64=<span class="string">&quot;--sysroot=<span class="variable">$&#123;NDK_HOME_17&#125;</span>/platforms/android-<span class="variable">$&#123;NDK_BUILD_VERSION&#125;</span>/arch-arm64 -isystem <span class="variable">$&#123;NDK_HOME_17&#125;</span>/sysroot/usr/include -isystem <span class="variable">$&#123;NDK_HOME_17&#125;</span>/sysroot/usr/include/aarch64-linux-android&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将PATH添加到环境变量中</span></span><br><span class="line">PATH=<span class="string">&quot;<span class="variable">$&#123;GCC_ARM&#125;</span>:<span class="variable">$&#123;GCC_CFG_ARM&#125;</span>:<span class="variable">$&#123;GCC_ARM64&#125;</span>:<span class="variable">$&#123;GCC_CFG_ARM64&#125;</span>:<span class="variable">$PATH</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="5-静态库的编译"><a href="#5-静态库的编译" class="headerlink" title="5.静态库的编译"></a>5.静态库的编译</h2><p>第一步：使用目标平台工具链下的GCC打出 xx.o ,具体对应可查看<code>ABI与预编译宏对应关系</code><br>arm对应命令  </p>
+<blockquote>
+<p><code>arm-linux-androideabi-gcc</code> $GCC_CFG_ARM -fPIC -c xx.c -o arm/xx.o </p>
+</blockquote>
+<p>arm64对应命令  </p>
+<blockquote>
+<p><code>aarch64-linux-android-gcc</code> $GCC_CFG_ARM64 -fPIC -c xx.c -o arm64/xx.o</p>
+</blockquote>
+<p>第二步：根据第一步中 xx.o 编译生成静态库文件 xx.a<br>arm对应命令  </p>
+<blockquote>
+<p><code>arm-linux-androideabi-ar</code> rcs -o arm/libxx.a arm/xx.o</p>
+</blockquote>
+<p>arm64对应命令  </p>
+<blockquote>
+<p><code>aarch64-linux-android-ar</code> rcs -o arm64/libxx.a arm64/xx.o</p>
+</blockquote>
+<h2 id="6-动态库的编译"><a href="#6-动态库的编译" class="headerlink" title="6.动态库的编译"></a>6.动态库的编译</h2><p>arm编译命令  </p>
+<blockquote>
+<p><code>arm-linux-androideabi-gcc</code> $GCC_CFG_ARM -fPIC -shared xx.c -o arm/libxx.so</p>
+</blockquote>
+<p>arm64编译命令  </p>
+<blockquote>
+<p><code>aarch64-linux-android-gcc</code> $GCC_CFG_ARM64 -fPIC -shared xx.c -o arm64/libxx.so</p>
+</blockquote>
+<h2 id="7-查看结果文件信息"><a href="#7-查看结果文件信息" class="headerlink" title="7.查看结果文件信息"></a>7.查看结果文件信息</h2><blockquote>
+<p><span>file libxx.so</span>  </p>
+</blockquote>
+<p>arm.so 查看后的信息</p>    
+ELF 32-bit LSB  shared object, ARM, EABI5 version 1 (SYSV), dynamically linked (uses shared libs), not stripped  
+<p>arm64.so 查看后的信息</p>   
+ELF 64-bit LSB  shared object, ARM aarch64, version 1 (SYSV), dynamically linked, not stripped
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>码字不易，请我喝杯咖啡吧</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat-pay.png" alt="Leevin Li 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/ali-pay.png" alt="Leevin Li 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leevin Li
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://leevinli.github.io/pages/4e4c9291649.html" title="NDK交叉编译">https://leevinli.github.io/pages/4e4c9291649.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/NDK/" rel="tag"># NDK</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/pages/8829c402.html" rel="prev" title="JNI-Native头文件生成">
+                  <i class="fa fa-chevron-left"></i> JNI-Native头文件生成
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/pages/c17a1f1d7.html" rel="next" title="JNI-签名对应关系">
+                  JNI-签名对应关系 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leevin Li</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">147k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:13</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"jc61b6SYbv5IOFh3USW8vILL-gzGzoHsz","app_key":"oSkI6ftn09BXIsXyocxBli0s","server_url":"https://leancloud.cn","security":false};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) === '-MdYXbMMI' ? `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com` : server_url;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"leevinli.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="简要描述Android R 版本系统，从长按开机键到核心系统服务的启动流程分析 启动架构图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-R-启动流程分析">
+<meta property="og:url" content="https://leevinli.github.io/pages/3f239b.html">
+<meta property="og:site_name" content="Leevin&#39; Bolg">
+<meta property="og:description" content="简要描述Android R 版本系统，从长按开机键到核心系统服务的启动流程分析 启动架构图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://leevinli.github.io/images/android-booting-process.jpg">
+<meta property="article:published_time" content="2020-08-09T11:40:45.000Z">
+<meta property="article:modified_time" content="2021-07-23T12:42:34.644Z">
+<meta property="article:author" content="Leevin Li">
+<meta property="article:tag" content="Framework">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://leevinli.github.io/images/android-booting-process.jpg">
+
+
+<link rel="canonical" href="https://leevinli.github.io/pages/3f239b.html">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Android-R-启动流程分析 | Leevin' Bolg</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Leevin' Bolg</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">56</span></a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%A6%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简要描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">启动架构图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">启动流程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Boot-Rom"><span class="nav-number">3.1.</span> <span class="nav-text">Boot Rom</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boot-Loader"><span class="nav-number">3.2.</span> <span class="nav-text">Boot Loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Kernel"><span class="nav-number">3.3.</span> <span class="nav-text">启动Kernel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Init%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.4.</span> <span class="nav-text">Init进程启动流程分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zygote%E5%92%8CSystemServer%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E7%9A%84%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.5.</span> <span class="nav-text">Zygote和SystemServer进程启动的流程分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8"><span class="nav-number">3.6.</span> <span class="nav-text">系统核心服务启动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leevin Li"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Leevin Li</p>
+  <div class="site-description" itemprop="description">Android、Flutter</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/LeevinLi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;LeevinLi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:x.leevin@gmail.com" title="E-Mail → mailto:x.leevin@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://androidxref.com/" title="http:&#x2F;&#x2F;androidxref.com" rel="noopener" target="_blank">Androidxref</a>
+        </li>
+    </ul>
+  </div>
+
+        </section>
+      </div>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/LeevinLi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://leevinli.github.io/pages/3f239b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-R-启动流程分析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-08-09 19:40:45" itemprop="dateCreated datePublished" datetime="2020-08-09T19:40:45+08:00">2020-08-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-23 20:42:34" itemprop="dateModified" datetime="2021-07-23T20:42:34+08:00">2021-07-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/pages/3f239b.html" class="post-meta-item leancloud_visitors" data-flag-title="Android-R-启动流程分析" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>Android R 版本系统，从长按开机键到核心系统服务的启动流程分析</p>
+<h1 id="启动架构图"><a href="#启动架构图" class="headerlink" title="启动架构图"></a>启动架构图</h1><p><img src="../../images/android-booting-process.jpg" alt="系统架构图"></p>
+<a id="more"></a>
+
+<h1 id="启动流程分析"><a href="#启动流程分析" class="headerlink" title="启动流程分析"></a>启动流程分析</h1><h2 id="Boot-Rom"><a href="#Boot-Rom" class="headerlink" title="Boot Rom"></a>Boot Rom</h2><p>按下电源键，设备上电，开始运行存在于ROM中的代码，将BootLoader加载至RAM(内存)</p>
+<h2 id="Boot-Loader"><a href="#Boot-Loader" class="headerlink" title="Boot Loader"></a>Boot Loader</h2><p>Bootloader核心任务是初始化内存，把boot.img(kernel + ramdisk)从flash上copy到RAM，然后交出对CPU的控制权给kernel</p>
+<h2 id="启动Kernel"><a href="#启动Kernel" class="headerlink" title="启动Kernel"></a>启动Kernel</h2><p>指针指向Kernel区，启动Kernel内核</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">\androidR\kernel<span class="number">-4.19</span>-lc\init\mian.c</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动kernel</span></span><br><span class="line"><span class="function">asmlinkage __visible <span class="keyword">void</span> __init <span class="title">start_kernel</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Init进程启动流程分析"><a href="#Init进程启动流程分析" class="headerlink" title="Init进程启动流程分析"></a>Init进程启动流程分析</h2><p>init进程是用户空间的第一个进程,也是所有进程的<strong>鼻祖</strong>进程</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Android R初始化过程进行了拆分，主要由SubcontextMain，SetupSelinux，SecondStageMain，FirstStageMain几个阶段组成</span><br><span class="line"></span><br><span class="line">\androidR\system\core\init\main.cpp</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __has_feature(address_sanitizer)</span></span><br><span class="line">    __asan_set_error_report_callback(AsanReportCallback);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(basename(argv[<span class="number">0</span>]), <span class="string">&quot;ueventd&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> ueventd_main(argc, argv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;subcontext&quot;</span>)) &#123;</span><br><span class="line">            android::base::InitLogging(argv, &amp;android::base::KernelLogger);</span><br><span class="line">            <span class="keyword">const</span> BuiltinFunctionMap&amp; function_map = GetBuiltinFunctionMap();</span><br><span class="line">            <span class="comment">//\androidR\system\core\init\subcontext.cpp#SubcontextMain()</span></span><br><span class="line">            <span class="keyword">return</span> SubcontextMain(argc, argv, &amp;function_map);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;selinux_setup&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">//调用\androidR\system\core\init\selinux.cpp#SetupSelinux()</span></span><br><span class="line">            <span class="keyword">return</span> SetupSelinux(argv);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;second_stage&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">//调用\androidR\system\core\init\init.cpp#SecondStageMain()</span></span><br><span class="line">            <span class="keyword">return</span> SecondStageMain(argc, argv);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用\androidR\system\core\init\first_stage_init.cpp#FirstStageMain()</span></span><br><span class="line">    <span class="keyword">return</span> FirstStageMain(argc, argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一个阶段主要完成了必须的分区挂载</span></span><br><span class="line"></span><br><span class="line">\androidR\system\core\init\first_stage_init.cpp</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FirstStageMain</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//挂载(mount) /sys, /dev, /proc ...</span></span><br><span class="line">    CHECKCALL(clearenv());</span><br><span class="line">    CHECKCALL(setenv(<span class="string">&quot;PATH&quot;</span>, _PATH_DEFPATH, <span class="number">1</span>));</span><br><span class="line">    <span class="comment">// Get the basic filesystem setup we need put together in the initramdisk</span></span><br><span class="line">    <span class="comment">// on / and then we&#x27;ll let the rc file figure out the rest.</span></span><br><span class="line">    CHECKCALL(mount(<span class="string">&quot;tmpfs&quot;</span>, <span class="string">&quot;/dev&quot;</span>, <span class="string">&quot;tmpfs&quot;</span>, MS_NOSUID, <span class="string">&quot;mode=0755&quot;</span>));</span><br><span class="line">    CHECKCALL(mkdir(<span class="string">&quot;/dev/pts&quot;</span>, <span class="number">0755</span>));</span><br><span class="line">    CHECKCALL(mkdir(<span class="string">&quot;/dev/socket&quot;</span>, <span class="number">0755</span>));</span><br><span class="line">    CHECKCALL(mount(<span class="string">&quot;devpts&quot;</span>, <span class="string">&quot;/dev/pts&quot;</span>, <span class="string">&quot;devpts&quot;</span>, <span class="number">0</span>, <span class="literal">NULL</span>));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAKE_STR(x) __STRING(x)</span></span><br><span class="line">    CHECKCALL(mount(<span class="string">&quot;proc&quot;</span>, <span class="string">&quot;/proc&quot;</span>, <span class="string">&quot;proc&quot;</span>, <span class="number">0</span>, <span class="string">&quot;hidepid=2,gid=&quot;</span> MAKE_STR(AID_READPROC)));</span><br><span class="line"><span class="meta">#<span class="meta-keyword">undef</span> MAKE_STR</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第二个阶段解析/system/core/rootdir/init.rc初始化文件，启动相关进程服务</span></span><br><span class="line"></span><br><span class="line">\androidR\system\core\init\init.cpp</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SecondStageMain</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    PropertyInit();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Umount the debug ramdisk after property service has read the .prop files when it means to.</span></span><br><span class="line">    <span class="keyword">if</span> (load_debug_prop) &#123;</span><br><span class="line">        UmountDebugRamdisk();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//运行/init.rc脚本,init.rc负责系统的初始化设置</span></span><br><span class="line">    LoadBootScripts(am, sm);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Turning this on and letting the INFO logging be discarded adds 0.2s to</span></span><br><span class="line">    <span class="comment">// Nexus 9 boot time, so it&#x27;s disabled by default.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">false</span>) DumpState();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Make the GSI status available before scripts start running.</span></span><br><span class="line">    <span class="keyword">auto</span> is_running = android::gsi::IsGsiRunning() ? <span class="string">&quot;1&quot;</span> : <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    SetProperty(gsi::kGsiBootedProp, is_running);</span><br><span class="line">    <span class="keyword">auto</span> is_installed = android::gsi::IsGsiInstalled() ? <span class="string">&quot;1&quot;</span> : <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    SetProperty(gsi::kGsiInstalledProp, is_installed);</span><br><span class="line"></span><br><span class="line">    am.QueueBuiltinAction(SetupCgroupsAction, <span class="string">&quot;SetupCgroups&quot;</span>);</span><br><span class="line">    am.QueueBuiltinAction(SetKptrRestrictAction, <span class="string">&quot;SetKptrRestrict&quot;</span>);</span><br><span class="line">    am.QueueBuiltinAction(TestPerfEventSelinuxAction, <span class="string">&quot;TestPerfEventSelinux&quot;</span>);</span><br><span class="line">    am.QueueEventTrigger(<span class="string">&quot;early-init&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Queue an action that waits for coldboot done so we know ueventd has set up all of /dev...</span></span><br><span class="line">    am.QueueBuiltinAction(wait_for_coldboot_done_action, <span class="string">&quot;wait_for_coldboot_done&quot;</span>);</span><br><span class="line">    <span class="comment">// ... so that we can start queuing up actions that require stuff from /dev.</span></span><br><span class="line">    am.QueueBuiltinAction(MixHwrngIntoLinuxRngAction, <span class="string">&quot;MixHwrngIntoLinuxRng&quot;</span>);</span><br><span class="line">    am.QueueBuiltinAction(SetMmapRndBitsAction, <span class="string">&quot;SetMmapRndBits&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">LoadBootScripts</span><span class="params">(ActionManager&amp; action_manager, ServiceList&amp; service_list)</span> </span>&#123;</span><br><span class="line">    Parser parser = CreateParser(action_manager, service_list);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> bootscript = GetProperty(<span class="string">&quot;ro.boot.init_rc&quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (bootscript.empty()) &#123;</span><br><span class="line">        parser.ParseConfig(<span class="string">&quot;/system/etc/init/hw/init.rc&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (!parser.ParseConfig(<span class="string">&quot;/system/etc/init&quot;</span>)) &#123;</span><br><span class="line">            late_import_paths.emplace_back(<span class="string">&quot;/system/etc/init&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// late_import is available only in Q and earlier release. As we don&#x27;t</span></span><br><span class="line">        <span class="comment">// have system_ext in those versions, skip late_import for system_ext.</span></span><br><span class="line">        parser.ParseConfig(<span class="string">&quot;/system_ext/etc/init&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (!parser.ParseConfig(<span class="string">&quot;/product/etc/init&quot;</span>)) &#123;</span><br><span class="line">            late_import_paths.emplace_back(<span class="string">&quot;/product/etc/init&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!parser.ParseConfig(<span class="string">&quot;/odm/etc/init&quot;</span>)) &#123;</span><br><span class="line">            late_import_paths.emplace_back(<span class="string">&quot;/odm/etc/init&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!parser.ParseConfig(<span class="string">&quot;/vendor/etc/init&quot;</span>)) &#123;</span><br><span class="line">            late_import_paths.emplace_back(<span class="string">&quot;/vendor/etc/init&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        parser.ParseConfig(bootscript);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="Zygote和SystemServer进程启动的流程分析"><a href="#Zygote和SystemServer进程启动的流程分析" class="headerlink" title="Zygote和SystemServer进程启动的流程分析"></a>Zygote和SystemServer进程启动的流程分析</h2><p>Zygote有<strong>受精卵</strong>的意思，它是一个VM进程，是Java层的第一个进程，由此进行了Java的世界</p>
+<pre class="mermaid">sequenceDiagram
+    participant app_main.cpp
+    participant AndroidRuntime.cpp
+    participant ZygoteInit.java
+    opt  
+        app_main.cpp ->> app_main.cpp: main()
+        app_main.cpp ->> AndroidRuntime.cpp: start()
+    end
+
+    opt  
+        AndroidRuntime.cpp ->> AndroidRuntime.cpp: startVM()
+        AndroidRuntime.cpp ->> AndroidRuntime.cpp: startReg()
+        AndroidRuntime.cpp ->> ZygoteInit.java: main()
+    end
+
+    opt  
+        ZygoteInit.java ->> ZygoteInit.java: registerServerSocketFromEnv()
+        ZygoteInit.java ->> ZygoteInit.java: preload()
+        ZygoteInit.java ->> ZygoteInit.java: forkSystemServer()
+        ZygoteInit.java ->> ZygoteInit.java: runSelectLoop()
+    end</pre>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">从init.rc文件可以知道，zyogte进程的原型是/system/bin/app_process64  </span><br><span class="line">对应的代码文件如下：</span><br><span class="line"></span><br><span class="line">frameworks/base/cmds/app_process/app_main.cpp</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* <span class="keyword">const</span> argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!LOG_NDEBUG) &#123;</span><br><span class="line">      String8 argv_String;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; argc; ++i) &#123;</span><br><span class="line">        argv_String.append(<span class="string">&quot;\&quot;&quot;</span>);</span><br><span class="line">        argv_String.append(argv[i]);</span><br><span class="line">        argv_String.append(<span class="string">&quot;\&quot; &quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      ALOGV(<span class="string">&quot;app_process main with argv: %s&quot;</span>, argv_String.<span class="built_in">string</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">AppRuntime <span class="title">runtime</span><span class="params">(argv[<span class="number">0</span>], computeArgBlockSize(argc, argv))</span></span>;</span><br><span class="line">    <span class="comment">// Process command line arguments</span></span><br><span class="line">    <span class="comment">// ignore argv[0]</span></span><br><span class="line">    argc--;</span><br><span class="line">    argv++;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//解析命令</span></span><br><span class="line">    ++i;  <span class="comment">// Skip unused &quot;parent dir&quot; argument.</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt; argc) &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* arg = argv[i++];</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">strcmp</span>(arg, <span class="string">&quot;--zygote&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            zygote = <span class="literal">true</span>;</span><br><span class="line">            niceName = ZYGOTE_NICE_NAME;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(arg, <span class="string">&quot;--start-system-server&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            startSystemServer = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(arg, <span class="string">&quot;--application&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            application = <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strncmp</span>(arg, <span class="string">&quot;--nice-name=&quot;</span>, <span class="number">12</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            niceName.setTo(arg + <span class="number">12</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strncmp</span>(arg, <span class="string">&quot;--&quot;</span>, <span class="number">2</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            className.setTo(arg);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            --i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//frameworks/base/core/jni/AndroidRuntime.cpp</span></span><br><span class="line">    <span class="comment">//最终通过AndroidRuntime.cpp启动对应进程</span></span><br><span class="line">    <span class="keyword">if</span> (zygote) &#123;</span><br><span class="line">        runtime.start(<span class="string">&quot;com.android.internal.os.ZygoteInit&quot;</span>, args, zygote);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (className) &#123;</span><br><span class="line">        runtime.start(<span class="string">&quot;com.android.internal.os.RuntimeInit&quot;</span>, args, zygote);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Error: no class name or --zygote supplied.\n&quot;</span>);</span><br><span class="line">        app_usage();</span><br><span class="line">        LOG_ALWAYS_FATAL(<span class="string">&quot;app_process: no class name or --zygote supplied.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">Android Runtime运行时环境在此处进行启动，主要完成了以下工作：  </span><br><span class="line"><span class="number">1.</span>启动虚拟机</span><br><span class="line"><span class="number">2.</span>注册系统JNI方法</span><br><span class="line"><span class="number">3.</span>预加载资源</span><br><span class="line"><span class="number">4.f</span>ork system server进程</span><br><span class="line"></span><br><span class="line">frameworks/base/core/jni/AndroidRuntime.cpp</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">AndroidRuntime::start</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* className, <span class="keyword">const</span> Vector&lt;String8&gt;&amp; options, <span class="keyword">bool</span> zygote)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="comment">/* start the virtual machine */</span></span><br><span class="line">    JniInvocation jni_invocation;</span><br><span class="line">    jni_invocation.Init(<span class="literal">NULL</span>);</span><br><span class="line">    JNIEnv* env;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//1.启动虚拟机</span></span><br><span class="line">    <span class="keyword">if</span> (startVm(&amp;mJavaVM, &amp;env, zygote, primary_zygote) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    onVmCreated(env);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Register android functions.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//2.注册系统JNI方法</span></span><br><span class="line">    <span class="keyword">if</span> (startReg(env) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">&quot;Unable to register all android natives\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span>* slashClassName = toSlashClassName(className != <span class="literal">NULL</span> ? className : <span class="string">&quot;&quot;</span>);</span><br><span class="line">    jclass startClass = env-&gt;FindClass(slashClassName);</span><br><span class="line">    <span class="keyword">if</span> (startClass == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">&quot;JavaVM unable to locate class &#x27;%s&#x27;\n&quot;</span>, slashClassName);</span><br><span class="line">        <span class="comment">/* keep going */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//反射调用\frameworks\base\core\java\com\android\internal\os\ZygoteInit.java$main()</span></span><br><span class="line">        jmethodID startMeth = env-&gt;GetStaticMethodID(startClass, <span class="string">&quot;main&quot;</span>,</span><br><span class="line">            <span class="string">&quot;([Ljava/lang/String;)V&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (startMeth == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            ALOGE(<span class="string">&quot;JavaVM unable to find main() in &#x27;%s&#x27;\n&quot;</span>, className);</span><br><span class="line">            <span class="comment">/* keep going */</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            env-&gt;CallStaticVoidMethod(startClass, startMeth, strArray);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">SystemServer进程在此启动</span><br><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line"></span><br><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String argv[])</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!enableLazyPreload) &#123;</span><br><span class="line">        bootTimingsTraceLog.traceBegin(<span class="string">&quot;ZygotePreload&quot;</span>);</span><br><span class="line">        EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_START,</span><br><span class="line">                SystemClock.uptimeMillis());</span><br><span class="line">        <span class="comment">/// M: Added for BOOTPROF</span></span><br><span class="line">        addBootEvent(<span class="string">&quot;Zygote:Preload Start&quot;</span>);</span><br><span class="line">        <span class="comment">/// @&#125;</span></span><br><span class="line">        <span class="comment">//3.预加载系统资源&#123;preloadResources(), preloadClasses()&#125;</span></span><br><span class="line">        preload(bootTimingsTraceLog);</span><br><span class="line">        EventLog.writeEvent(LOG_BOOT_PROGRESS_PRELOAD_END,</span><br><span class="line">                SystemClock.uptimeMillis());</span><br><span class="line">        bootTimingsTraceLog.traceEnd(); <span class="comment">// ZygotePreload</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="keyword">if</span> (startSystemServer) &#123;</span><br><span class="line">        <span class="comment">//4.fork system server进程</span></span><br><span class="line">        Runnable r = forkSystemServer(abiList, zygoteSocketName, zygoteServer);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// &#123;@code r == null&#125; in the parent (zygote) process, and &#123;@code r != null&#125; in the</span></span><br><span class="line">        <span class="comment">// child (system_server) process.</span></span><br><span class="line">        <span class="keyword">if</span> (r != <span class="keyword">null</span>) &#123;</span><br><span class="line">            r.run();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="系统核心服务启动"><a href="#系统核心服务启动" class="headerlink" title="系统核心服务启动"></a>系统核心服务启动</h2><p>1.初始化SystemContext<br>2.创建SystemServiceManager<br>3.启动服务{startBootstrapServices(),startCoreServices(),startOtherServices()}  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The main entry point from zygote.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> SystemServer().run();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize native services.</span></span><br><span class="line">    System.loadLibrary(<span class="string">&quot;android_servers&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allow heap / perf profiling.</span></span><br><span class="line">    initZygoteChildHeapProfiling();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.初始化System Context</span></span><br><span class="line">    <span class="comment">// Initialize the system context.</span></span><br><span class="line">    createSystemContext();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Call per-process mainline module initialization.</span></span><br><span class="line">    ActivityThread.initializeMainlineModules();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create the system service manager.</span></span><br><span class="line">    <span class="comment">// 2.创建 SystemServiceManager 对象，用来启动后面的服务</span></span><br><span class="line">    mSystemServiceManager = <span class="keyword">new</span> SystemServiceManager(mSystemContext);</span><br><span class="line">    mSystemServiceManager.setStartInfo(mRuntimeRestart, mRuntimeStartElapsedTime, mRuntimeStartUptime);</span><br><span class="line">    LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">    <span class="comment">// Prepare the thread pool for init tasks that can be parallelized</span></span><br><span class="line">    SystemServerInitThreadPool.start();</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// Start services.</span></span><br><span class="line">    <span class="comment">// 3.启动系统服务</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        t.traceBegin(<span class="string">&quot;StartServices&quot;</span>);</span><br><span class="line">        <span class="comment">// 3.1</span></span><br><span class="line">        startBootstrapServices(t);</span><br><span class="line">        <span class="comment">/// M: For mtk systemserver</span></span><br><span class="line">        sMtkSystemServerIns.startMtkBootstrapServices();</span><br><span class="line">        <span class="comment">// 3.2</span></span><br><span class="line">        startCoreServices(t);</span><br><span class="line">        <span class="comment">/// M: for mtk other service.</span></span><br><span class="line">        sMtkSystemServerIns.startMtkCoreServices();</span><br><span class="line">        <span class="comment">// 3.3</span></span><br><span class="line">        startOtherServices(t);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;******************************************&quot;</span>);</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;************ Failure starting system services&quot;</span>, ex);</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        t.traceEnd(); <span class="comment">// StartServices</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1.本片文章只是笔者在学习系统启动流程时留下的笔记记录，初衷只是想将学习的脉络用文字形式记录下来，以供日后温故<br>2.本文只是粗略的记录了启动过程中关键的点，其中很多地方不够详细，原理也没有深究，源于Android系统的源码十分庞大，我们在阅读源码时应该只抓关键步骤，避免陷入细节中无法自拔，除非你是真正从事偏底层的开发工作</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>码字不易，请我喝杯咖啡吧</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat-pay.png" alt="Leevin Li 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/ali-pay.png" alt="Leevin Li 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leevin Li
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://leevinli.github.io/pages/3f239b.html" title="Android-R-启动流程分析">https://leevinli.github.io/pages/3f239b.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Framework/" rel="tag"># Framework</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/pages/ac1033.html" rel="prev" title="ThreadLocal-原理解析">
+                  <i class="fa fa-chevron-left"></i> ThreadLocal-原理解析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/pages/52c457.html" rel="next" title="Handler-源码解析">
+                  Handler-源码解析 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leevin Li</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">147k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:13</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"jc61b6SYbv5IOFh3USW8vILL-gzGzoHsz","app_key":"oSkI6ftn09BXIsXyocxBli0s","server_url":"https://leancloud.cn","security":false};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) === '-MdYXbMMI' ? `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com` : server_url;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+</body>
+</html>

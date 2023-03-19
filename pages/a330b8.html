@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"leevinli.github.io","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="简要描述上一节分析了Android-R-启动流程，紧接这上一节此篇将分析ActivityManagerService启动相关流程     ActivityManagerService只看命名就知道它是管理Activty的服务，包括Activity的生命周期，样式风格，页面消息分发等一系列行为的服务     由于各Android版本存在较大的差异性，此篇基于Android R版本源码进行分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActivityManagerServer-原理解析">
+<meta property="og:url" content="https://leevinli.github.io/pages/a330b8.html">
+<meta property="og:site_name" content="Leevin&#39; Bolg">
+<meta property="og:description" content="简要描述上一节分析了Android-R-启动流程，紧接这上一节此篇将分析ActivityManagerService启动相关流程     ActivityManagerService只看命名就知道它是管理Activty的服务，包括Activity的生命周期，样式风格，页面消息分发等一系列行为的服务     由于各Android版本存在较大的差异性，此篇基于Android R版本源码进行分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-24T06:40:45.000Z">
+<meta property="article:modified_time" content="2021-07-23T13:05:03.724Z">
+<meta property="article:author" content="Leevin Li">
+<meta property="article:tag" content="Framework">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://leevinli.github.io/pages/a330b8.html">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>ActivityManagerServer-原理解析 | Leevin' Bolg</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Leevin' Bolg</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">56</span></a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E8%A6%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简要描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">核心流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">启动流程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%80%EF%BC%9A%E5%88%9B%E5%BB%BASystemContext%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">步骤一：创建SystemContext上下文对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%BA%8C%EF%BC%9A%E5%88%9B%E5%BB%BASystemServiceManager%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">步骤二：创建SystemServiceManager对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E4%B8%89%EF%BC%9A%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.3.</span> <span class="nav-text">步骤三：启动系统核心服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E5%9B%9B%EF%BC%9A%E6%A0%B8%E5%BF%83%E6%9C%8D%E5%8A%A1%E5%87%86%E5%A4%87%E5%AE%8C%E6%AF%95"><span class="nav-number">3.4.</span> <span class="nav-text">步骤四：核心服务准备完毕</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leevin Li"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Leevin Li</p>
+  <div class="site-description" itemprop="description">Android、Flutter</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/LeevinLi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;LeevinLi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:x.leevin@gmail.com" title="E-Mail → mailto:x.leevin@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://androidxref.com/" title="http:&#x2F;&#x2F;androidxref.com" rel="noopener" target="_blank">Androidxref</a>
+        </li>
+    </ul>
+  </div>
+
+        </section>
+      </div>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/LeevinLi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://leevinli.github.io/pages/a330b8.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Leevin Li">
+      <meta itemprop="description" content="Android、Flutter">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leevin' Bolg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ActivityManagerServer-原理解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-24 14:40:45" itemprop="dateCreated datePublished" datetime="2021-07-24T14:40:45+08:00">2021-07-24</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-23 21:05:03" itemprop="dateModified" datetime="2021-07-23T21:05:03+08:00">2021-07-23</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Framework/" itemprop="url" rel="index"><span itemprop="name">Framework</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/pages/a330b8.html" class="post-meta-item leancloud_visitors" data-flag-title="ActivityManagerServer-原理解析" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>29k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>27 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="简要描述"><a href="#简要描述" class="headerlink" title="简要描述"></a>简要描述</h1><p>上一节分析了<a href="https://leevinli.github.io/pages/3f239b.html">Android-R-启动流程</a>，紧接这上一节此篇将分析ActivityManagerService启动相关流程    </p>
+<p>ActivityManagerService只看命名就知道它是管理Activty的服务，包括Activity的生命周期，样式风格，页面消息分发等一系列行为的服务    </p>
+<p>由于各Android版本存在较大的差异性，此篇基于<strong>Android R</strong>版本源码进行分析  </p>
+<a id="more"></a>
+
+<h1 id="核心流程图"><a href="#核心流程图" class="headerlink" title="核心流程图"></a>核心流程图</h1><pre class="mermaid">sequenceDiagram
+    participant SystemServer
+    participant ActivityThread
+    participant ContextImpl
+    participant ActivityManagerService
+    participant ActivityTaskManagerService
+
+    Note right of SystemServer: run()
+
+    opt createSystemContext()
+        SystemServer ->> ActivityThread: systemMain()
+        ActivityThread ->> SystemServer: getSystemUiContext()
+    end
+
+    opt attach()
+        ActivityThread ->> ContextImpl: attach(true, 0)
+
+        loop attach()
+          ContextImpl ->> ContextImpl: attachApplication(true, 0)
+          ContextImpl ->> ContextImpl: makeApplication(true, 0)
+        end
+    end
+
+    opt startBootstrapServices()
+        SystemServer ->> ActivityTaskManagerService: startService(ActivityTaskManagerService.Lifecycle.class)
+
+        loop 
+          ActivityTaskManagerService ->> ActivityTaskManagerService: start()
+        end
+    end
+
+    opt 
+        SystemServer ->> ActivityManagerService: ActivityManagerService.Lifecycle.startService(SystemServiceManager, atm)
+        SystemServer ->> ActivityManagerService: ActivityManagerService.setSystemServiceManager(SystemServiceManager)
+        SystemServer ->> ActivityManagerService: ActivityManagerService.setInstaller(installer)
+        SystemServer ->> ActivityManagerService: ActivityManagerService.setSystemProcess()
+
+        loop 
+          ActivityManagerService ->> ActivityManagerService: start()
+          ActivityManagerService ->> ActivityThread: installSystemApplicationInfo()
+          ActivityThread ->> ContextImpl: installSystemApplicationInfo()
+        end
+    end
+
+    opt 
+        SystemServer ->> ActivityManagerService: installSystemProviders()
+        ActivityManagerService ->> ActivityThread: installSystemProviders()
+        ActivityManagerService ->> ActivityThread: installSystemProviders()
+        SystemServer ->> ActivityManagerService: systemReady()
+        ActivityManagerService ->> ActivityTaskManagerService: startHomeOnAllDisplays()
+    end</pre>
+
+<h1 id="启动流程分析"><a href="#启动流程分析" class="headerlink" title="启动流程分析"></a>启动流程分析</h1><p>根据上面流程图，可以看出AMS启动过程主要分为四个步骤，四个步骤主要集中的run()方法中，如下代码所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The main entry point from zygote.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> SystemServer().run();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize native services.</span></span><br><span class="line">    System.loadLibrary(<span class="string">&quot;android_servers&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allow heap / perf profiling.</span></span><br><span class="line">    initZygoteChildHeapProfiling();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.初始化System Context</span></span><br><span class="line">    <span class="comment">// Initialize the system context.</span></span><br><span class="line">    createSystemContext();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Call per-process mainline module initialization.</span></span><br><span class="line">    ActivityThread.initializeMainlineModules();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create the system service manager.</span></span><br><span class="line">    <span class="comment">// 2.创建 SystemServiceManager 对象，用来管理服务</span></span><br><span class="line">    mSystemServiceManager = <span class="keyword">new</span> SystemServiceManager(mSystemContext);</span><br><span class="line">    mSystemServiceManager.setStartInfo(mRuntimeRestart, mRuntimeStartElapsedTime, mRuntimeStartUptime);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.1 添加SystemServiceManager至LocalServices中</span></span><br><span class="line">    LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">    <span class="comment">// Prepare the thread pool for init tasks that can be parallelized</span></span><br><span class="line">    SystemServerInitThreadPool.start();</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// Start services.</span></span><br><span class="line">    <span class="comment">// 3.启动系统服务</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        t.traceBegin(<span class="string">&quot;StartServices&quot;</span>);</span><br><span class="line">        <span class="comment">// 3.1</span></span><br><span class="line">        startBootstrapServices(t);</span><br><span class="line">        <span class="comment">/// M: For mtk systemserver</span></span><br><span class="line">        sMtkSystemServerIns.startMtkBootstrapServices();</span><br><span class="line">        <span class="comment">// 3.2</span></span><br><span class="line">        startCoreServices(t);</span><br><span class="line">        <span class="comment">/// M: for mtk other service.</span></span><br><span class="line">        sMtkSystemServerIns.startMtkCoreServices();</span><br><span class="line">        <span class="comment">// 3.3</span></span><br><span class="line">        startOtherServices(t);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;******************************************&quot;</span>);</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;************ Failure starting system services&quot;</span>, ex);</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        t.traceEnd(); <span class="comment">// StartServices</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="步骤一：创建SystemContext上下文对象"><a href="#步骤一：创建SystemContext上下文对象" class="headerlink" title="步骤一：创建SystemContext上下文对象"></a>步骤一：创建SystemContext上下文对象</h2><p>创建SystemContext上下文对象，这个步骤里又大致可分为两个过程，创建主线程ActivityThread和SystemContext<br>ActivityThread是SystemServer进程的主线程，此过程中创建了中间件Instrumentation对象和我们熟知的Application对象<br>mSystemContext实际就是ContextImpl一个实例，ContextImpl包含了进程运行的环境和四大组件交互的能力<br>我们经常使用的startActivity，sendBroadcast等方法最终都会通过ContextImpl进行执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 步骤一代码分析主要流程</span></span><br><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line">frameworks\base\core\java\android\app\ActivityThread.java</span><br><span class="line">frameworks\base\core\java\android\app\ContextImpl.java</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">createSystemContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1.1 创建SystemServer进程的主线程</span></span><br><span class="line">    ActivityThread activityThread = ActivityThread.systemMain();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.2 创建SystemContext上下文对象</span></span><br><span class="line">    mSystemContext = activityThread.getSystemContext();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置style</span></span><br><span class="line">    mSystemContext.setTheme(DEFAULT_SYSTEM_THEME);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Context systemUiContext = activityThread.getSystemUiContext();</span><br><span class="line">    systemUiContext.setTheme(DEFAULT_SYSTEM_THEME);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.1</span></span><br><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ActivityThread <span class="title">systemMain</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// The system process on low-memory devices do not get to use hardware</span></span><br><span class="line">    <span class="comment">// accelerated drawing, since this can add too much overhead to the</span></span><br><span class="line">    <span class="comment">// process.</span></span><br><span class="line">    <span class="keyword">if</span> (!ActivityManager.isHighEndGfx()) &#123;</span><br><span class="line">        ThreadedRenderer.disable(<span class="keyword">true</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ThreadedRenderer.enableForegroundTrimming();</span><br><span class="line">    &#125;</span><br><span class="line">    ActivityThread thread = <span class="keyword">new</span> ActivityThread();</span><br><span class="line">    thread.attach(<span class="keyword">true</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> thread;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.1.1</span></span><br><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(<span class="keyword">boolean</span> system, <span class="keyword">long</span> startSeq)</span> </span>&#123;</span><br><span class="line">    sCurrentActivityThread = <span class="keyword">this</span>;</span><br><span class="line">    mSystemThread = system;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!system) &#123;</span><br><span class="line">        android.ddm.DdmHandleAppName.setAppName(<span class="string">&quot;&lt;pre-initialized&gt;&quot;</span>, UserHandle.myUserId());</span><br><span class="line">        RuntimeInit.setApplicationObject(mAppThread.asBinder());</span><br><span class="line">        <span class="keyword">final</span> IActivityManager mgr = ActivityManager.getService();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            mgr.attachApplication(mAppThread, startSeq);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> ex.rethrowFromSystemServer();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Don&#x27;t set application object here -- if the system crashes,</span></span><br><span class="line">        <span class="comment">// we can&#x27;t display an alert, we just want to die die die.</span></span><br><span class="line">        android.ddm.DdmHandleAppName.setAppName(<span class="string">&quot;system_process&quot;</span>, UserHandle.myUserId());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建Instrumentation对象</span></span><br><span class="line">            mInstrumentation = <span class="keyword">new</span> Instrumentation();</span><br><span class="line">            mInstrumentation.basicInit(<span class="keyword">this</span>);</span><br><span class="line">            ContextImpl context = ContextImpl.createAppContext(<span class="keyword">this</span>, getSystemContext().mPackageInfo);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建Application对象</span></span><br><span class="line">            mInitialApplication = context.mPackageInfo.makeApplication(<span class="keyword">true</span>, <span class="keyword">null</span>);</span><br><span class="line">            mInitialApplication.onCreate();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Unable to instantiate Application():&quot;</span> + e.toString(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    ViewRootImpl.addConfigCallback(configChangedCallback);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.2</span></span><br><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ContextImpl <span class="title">getSystemContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (mSystemContext == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 创建SystemContext</span></span><br><span class="line">            mSystemContext = ContextImpl.createSystemContext(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mSystemContext;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.2.1</span></span><br><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> ContextImpl <span class="title">createSystemContext</span><span class="params">(ActivityThread mainThread)</span> </span>&#123;</span><br><span class="line">    LoadedApk packageInfo = <span class="keyword">new</span> LoadedApk(mainThread);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//创建ContextImpl对象 </span></span><br><span class="line">    ContextImpl context = <span class="keyword">new</span> ContextImpl(<span class="keyword">null</span>, mainThread, packageInfo, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="number">0</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    context.setResources(packageInfo.getResources());</span><br><span class="line">    context.mResources.updateConfiguration(context.mResourcesManager.getConfiguration(), context.mResourcesManager.getDisplayMetrics());</span><br><span class="line">    context.mIsSystemOrSystemUiContext = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="步骤二：创建SystemServiceManager对象"><a href="#步骤二：创建SystemServiceManager对象" class="headerlink" title="步骤二：创建SystemServiceManager对象"></a>步骤二：创建SystemServiceManager对象</h2><p>创建SystemServiceManager对象，并添加到LocalServices中<br>SystemService是一个抽象类，实现类包括FileIntegrityService，DisplayManagerService，UriGrantsManagerService等<br>SystemServiceManager是SystemService的管理类，包括创建，启动，停止等生命周期方法管理  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">\frameworks\base\services\core\java\com\android\server\SystemService.java</span><br><span class="line">\frameworks\base\services\core\java\com\android\server\SystemServiceManager.java</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> SystemService <span class="title">startService</span><span class="params">(String className)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 通过类名获取SystemService的类对象</span></span><br><span class="line">	<span class="keyword">final</span> Class&lt;SystemService&gt; serviceClass = loadClassFromLoader(className,</span><br><span class="line">			<span class="keyword">this</span>.getClass().getClassLoader());</span><br><span class="line">	<span class="keyword">return</span> startService(serviceClass);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T extends SystemService&gt; <span class="function">T <span class="title">startService</span><span class="params">(Class&lt;T&gt; serviceClass)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> String name = serviceClass.getName();</span><br><span class="line">        Slog.i(TAG, <span class="string">&quot;Starting &quot;</span> + name);</span><br><span class="line">        Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, <span class="string">&quot;StartService &quot;</span> + name);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create the service.</span></span><br><span class="line">        <span class="keyword">if</span> (!SystemService.class.isAssignableFrom(serviceClass)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Failed to create &quot;</span> + name</span><br><span class="line">                    + <span class="string">&quot;: service must extend &quot;</span> + SystemService.class.getName());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> T service;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 反射出真正的SystemService对象</span></span><br><span class="line">            Constructor&lt;T&gt; constructor = serviceClass.getConstructor(Context.class);</span><br><span class="line">            service = constructor.newInstance(mContext);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 启动服务</span></span><br><span class="line">        startService(service);</span><br><span class="line">        <span class="keyword">return</span> service;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startService</span><span class="params">(<span class="meta">@NonNull</span> <span class="keyword">final</span> SystemService service)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Register it.</span></span><br><span class="line">    <span class="comment">// 添加到服务管理ArrayList中进行管理</span></span><br><span class="line">    mServices.add(service);</span><br><span class="line">    <span class="comment">// Start it.</span></span><br><span class="line">    <span class="keyword">long</span> time = SystemClock.elapsedRealtime();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 启动服务</span></span><br><span class="line">        service.onStart();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Failed to start service &quot;</span> + service.getClass().getName()</span><br><span class="line">                + <span class="string">&quot;: onStart threw an exception&quot;</span>, ex);</span><br><span class="line">    &#125;</span><br><span class="line">    warnIfTooLong(SystemClock.elapsedRealtime() - time, service, <span class="string">&quot;onStart&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="步骤三：启动系统核心服务"><a href="#步骤三：启动系统核心服务" class="headerlink" title="步骤三：启动系统核心服务"></a>步骤三：启动系统核心服务</h2><p>启动startBootstrapServices(),startCoreServices(),startOtherServices()服务<br>创建ATMS，AMS并启动<br>设置系统进程，并注册进程相关信息服务  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line">frameworks\base\services\core\java\com\android\server\am\ActivityManagerService.java</span><br><span class="line">frameworks\base\services\core\java\com\android\vm\ActivityTaskManagerService.java</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">(<span class="meta">@NonNull</span> TimingsTraceAndSlog t)</span> </span>&#123;</span><br><span class="line">    t.traceBegin(<span class="string">&quot;startBootstrapServices&quot;</span>);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Activity manager runs the show.</span></span><br><span class="line">    t.traceBegin(<span class="string">&quot;StartActivityManager&quot;</span>);</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Might need to move after migration to WM.</span></span><br><span class="line">    <span class="comment">// 3.1.1创建ATMS并启动</span></span><br><span class="line">    ActivityTaskManagerService atm = mSystemServiceManager.startService(ActivityTaskManagerService.Lifecycle.class).getService();</span><br><span class="line">    <span class="comment">// 3.2.1创建AMS并启动</span></span><br><span class="line">    mActivityManagerService = ActivityManagerService.Lifecycle.startService(mSystemServiceManager, atm);</span><br><span class="line">    mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</span><br><span class="line">    mActivityManagerService.setInstaller(installer);</span><br><span class="line">    mWindowManagerGlobalLock = atm.getGlobalLock();</span><br><span class="line">    t.traceEnd();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3.3.1 设置系统进程</span></span><br><span class="line">    <span class="comment">// Set up the Application instance for the system process and get started.</span></span><br><span class="line">    t.traceBegin(<span class="string">&quot;SetSystemProcess&quot;</span>);</span><br><span class="line">    mActivityManagerService.setSystemProcess();</span><br><span class="line">    t.traceEnd();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.2.2</span></span><br><span class="line"><span class="comment">// AMS extend IActivityManager.Stub，无法再继承SystemService，因此使用Lifecycle内部类的方式实现了生命周期相关方法的实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Lifecycle</span> <span class="keyword">extends</span> <span class="title">SystemService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ActivityTaskManagerService sAtm;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Lifecycle</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">        <span class="comment">// 创建AMS服务</span></span><br><span class="line">        mService = <span class="keyword">new</span> ActivityManagerService(context, sAtm);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ActivityManagerService <span class="title">startService</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            SystemServiceManager ssm, ActivityTaskManagerService atm)</span> </span>&#123;</span><br><span class="line">        sAtm = atm;</span><br><span class="line">        <span class="keyword">return</span> ssm.startService(ActivityManagerService.Lifecycle.class).getService();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 开始AMS服务</span></span><br><span class="line">        mService.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBootPhase</span><span class="params">(<span class="keyword">int</span> phase)</span> </span>&#123;</span><br><span class="line">        mService.mBootPhase = phase;</span><br><span class="line">        <span class="keyword">if</span> (phase == PHASE_SYSTEM_SERVICES_READY) &#123;</span><br><span class="line">            mService.mBatteryStatsService.systemServicesReady();</span><br><span class="line">            mService.mServices.systemServicesReady();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (phase == PHASE_ACTIVITY_MANAGER_READY) &#123;</span><br><span class="line">            mService.startBroadcastObservers();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (phase == PHASE_THIRD_PARTY_APPS_CAN_START) &#123;</span><br><span class="line">            mService.mPackageWatchdog.onPackagesReady();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCleanupUser</span><span class="params">(<span class="keyword">int</span> userId)</span> </span>&#123;</span><br><span class="line">        mService.mBatteryStatsService.onCleanupUser(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ActivityManagerService <span class="title">getService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.2.3</span></span><br><span class="line"><span class="comment">// AMS构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerService</span><span class="params">(Context systemContext, ActivityTaskManagerService atm)</span> </span>&#123;</span><br><span class="line">    LockGuard.installLock(<span class="keyword">this</span>, LockGuard.INDEX_ACTIVITY);</span><br><span class="line">    mInjector = <span class="keyword">new</span> Injector(systemContext);</span><br><span class="line">    <span class="comment">// 设置上下文对象</span></span><br><span class="line">    mContext = systemContext;</span><br><span class="line"></span><br><span class="line">    mFactoryTest = FactoryTest.getMode();</span><br><span class="line">    mSystemThread = ActivityThread.currentActivityThread();</span><br><span class="line">    mUiContext = mSystemThread.getSystemUiContext();</span><br><span class="line"></span><br><span class="line">    Slog.i(TAG, <span class="string">&quot;Memory class: &quot;</span> + ActivityManager.staticGetMemoryClass());</span><br><span class="line"></span><br><span class="line">    mHandlerThread = <span class="keyword">new</span> ServiceThread(TAG, THREAD_PRIORITY_FOREGROUND, <span class="keyword">false</span> <span class="comment">/*allowIo*/</span>);</span><br><span class="line">    mHandlerThread.start();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置主线程Handler</span></span><br><span class="line">    mHandler = <span class="keyword">new</span> MainHandler(mHandlerThread.getLooper());</span><br><span class="line">    mUiHandler = mInjector.getUiHandler(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    mProcStartHandlerThread = <span class="keyword">new</span> ServiceThread(TAG + <span class="string">&quot;:procStart&quot;</span>, THREAD_PRIORITY_FOREGROUND, <span class="keyword">false</span> <span class="comment">/* allowIo */</span>);</span><br><span class="line">    mProcStartHandlerThread.start();</span><br><span class="line">    mProcStartHandler = <span class="keyword">new</span> Handler(mProcStartHandlerThread.getLooper());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Broadcast policy parameters</span></span><br><span class="line">    <span class="keyword">final</span> BroadcastConstants foreConstants = <span class="keyword">new</span> BroadcastConstants(Settings.Global.BROADCAST_FG_CONSTANTS);</span><br><span class="line">    foreConstants.TIMEOUT = BROADCAST_FG_TIMEOUT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> BroadcastConstants backConstants = <span class="keyword">new</span> BroadcastConstants(Settings.Global.BROADCAST_BG_CONSTANTS);</span><br><span class="line">    backConstants.TIMEOUT = BROADCAST_BG_TIMEOUT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> BroadcastConstants offloadConstants = <span class="keyword">new</span> BroadcastConstants(Settings.Global.BROADCAST_OFFLOAD_CONSTANTS);</span><br><span class="line">    offloadConstants.TIMEOUT = BROADCAST_BG_TIMEOUT;</span><br><span class="line">    <span class="comment">// by default, no &quot;slow&quot; policy in this queue</span></span><br><span class="line">    offloadConstants.SLOW_TIME = Integer.MAX_VALUE;</span><br><span class="line"></span><br><span class="line">    mEnableOffloadQueue = SystemProperties.getBoolean(<span class="string">&quot;persist.device_config.activity_manager_native_boot.offload_queue_enabled&quot;</span>, <span class="keyword">false</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置各BroadcastQueue类型超时时长</span></span><br><span class="line">    mFgBroadcastQueue = <span class="keyword">new</span> BroadcastQueue(<span class="keyword">this</span>, mHandler,<span class="string">&quot;foreground&quot;</span>, foreConstants, <span class="keyword">false</span>);</span><br><span class="line">    mBgBroadcastQueue = <span class="keyword">new</span> BroadcastQueue(<span class="keyword">this</span>, mHandler,<span class="string">&quot;background&quot;</span>, backConstants, <span class="keyword">true</span>);</span><br><span class="line">    mOffloadBroadcastQueue = <span class="keyword">new</span> BroadcastQueue(<span class="keyword">this</span>, mHandler,<span class="string">&quot;offload&quot;</span>, offloadConstants, <span class="keyword">true</span>);</span><br><span class="line">    mBroadcastQueues[<span class="number">0</span>] = mFgBroadcastQueue;</span><br><span class="line">    mBroadcastQueues[<span class="number">1</span>] = mBgBroadcastQueue;</span><br><span class="line">    mBroadcastQueues[<span class="number">2</span>] = mOffloadBroadcastQueue;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    mServices = <span class="keyword">new</span> ActiveServices(<span class="keyword">this</span>);</span><br><span class="line">    mProviderMap = <span class="keyword">new</span> ProviderMap(<span class="keyword">this</span>);</span><br><span class="line">    mPackageWatchdog = PackageWatchdog.getInstance(mUiContext);</span><br><span class="line">    mAppErrors = <span class="keyword">new</span> AppErrors(mUiContext, <span class="keyword">this</span>, mPackageWatchdog);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> File systemDir = SystemServiceManager.ensureSystemDir();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Move creation of battery stats service outside of activity manager service.</span></span><br><span class="line">    mBatteryStatsService = <span class="keyword">new</span> BatteryStatsService(systemContext, systemDir,</span><br><span class="line">            BackgroundThread.get().getHandler());</span><br><span class="line">    mBatteryStatsService.getActiveStatistics().readLocked();</span><br><span class="line">    mBatteryStatsService.scheduleWriteToDisk();</span><br><span class="line">    mOnBattery = DEBUG_POWER ? <span class="keyword">true</span></span><br><span class="line">            : mBatteryStatsService.getActiveStatistics().getIsOnBattery();</span><br><span class="line">    mBatteryStatsService.getActiveStatistics().setCallback(<span class="keyword">this</span>);</span><br><span class="line">    mOomAdjProfiler.batteryPowerChanged(mOnBattery);</span><br><span class="line"></span><br><span class="line">    mProcessStats = <span class="keyword">new</span> ProcessStatsService(<span class="keyword">this</span>, <span class="keyword">new</span> File(systemDir, <span class="string">&quot;procstats&quot;</span>));</span><br><span class="line"></span><br><span class="line">    mAppOpsService = mInjector.getAppOpsService(<span class="keyword">new</span> File(systemDir, <span class="string">&quot;appops.xml&quot;</span>), mHandler);</span><br><span class="line"></span><br><span class="line">    mUgmInternal = LocalServices.getService(UriGrantsManagerInternal.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    mActivityTaskManager = atm;</span><br><span class="line">    mActivityTaskManager.initialize(mIntentFirewall, mPendingIntentController,DisplayThread.get().getLooper());</span><br><span class="line">    mAtmInternal = LocalServices.getService(ActivityTaskManagerInternal.class);</span><br><span class="line"></span><br><span class="line">    mHiddenApiBlacklist = <span class="keyword">new</span> HiddenApiSettings(mHandler, mContext);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 加入监控</span></span><br><span class="line">    Watchdog.getInstance().addMonitor(<span class="keyword">this</span>);</span><br><span class="line">    Watchdog.getInstance().addThread(mHandler);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    mInternal = <span class="keyword">new</span> LocalService();</span><br><span class="line">    mPendingStartActivityUids = <span class="keyword">new</span> PendingStartActivityUids(mContext);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.2.4</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 移除所有进程组</span></span><br><span class="line">    removeAllProcessGroups();</span><br><span class="line">    <span class="comment">// 开始后CPU监控</span></span><br><span class="line">    mProcessCpuThread.start();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动电池服务</span></span><br><span class="line">    mBatteryStatsService.publish();</span><br><span class="line">    mAppOpsService.publish();</span><br><span class="line">    Slog.d(<span class="string">&quot;AppOps&quot;</span>, <span class="string">&quot;AppOpsService published&quot;</span>);</span><br><span class="line">    LocalServices.addService(ActivityManagerInternal.class, mInternal);</span><br><span class="line">    mActivityTaskManager.onActivityManagerInternalAdded();</span><br><span class="line">    mPendingIntentController.onActivityManagerInternalAdded();</span><br><span class="line">    <span class="comment">/// M: ANR Debug Mechanism</span></span><br><span class="line">    mAnrManager.startAnrManagerService(MY_PID);</span><br><span class="line">    <span class="comment">// Wait for the synchronized block started in mProcessCpuThread,</span></span><br><span class="line">    <span class="comment">// so that any other access to mProcessCpuTracker from main thread</span></span><br><span class="line">    <span class="comment">// will be blocked during mProcessCpuTracker initialization.</span></span><br><span class="line">    <span class="comment">/// M: DuraSpeed</span></span><br><span class="line">    mAmsExt.startDuraSpeedService(mContext);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        mProcessCpuInitLatch.await();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        Slog.wtf(TAG, <span class="string">&quot;Interrupted wait during start&quot;</span>, e);</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Interrupted wait during start&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.3.2</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSystemProcess</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 注册进程基础信息服务</span></span><br><span class="line">        ServiceManager.addService(Context.ACTIVITY_SERVICE, <span class="keyword">this</span>, <span class="comment">/* allowIsolated= */</span> <span class="keyword">true</span>, DUMP_FLAG_PRIORITY_CRITICAL | DUMP_FLAG_PRIORITY_NORMAL | DUMP_FLAG_PROTO);</span><br><span class="line">        ServiceManager.addService(ProcessStats.SERVICE_NAME, mProcessStats);</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;meminfo&quot;</span>, <span class="keyword">new</span> MemBinder(<span class="keyword">this</span>), <span class="comment">/* allowIsolated= */</span> <span class="keyword">false</span>, DUMP_FLAG_PRIORITY_HIGH);</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;gfxinfo&quot;</span>, <span class="keyword">new</span> GraphicsBinder(<span class="keyword">this</span>));</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;dbinfo&quot;</span>, <span class="keyword">new</span> DbBinder(<span class="keyword">this</span>));</span><br><span class="line">        <span class="keyword">if</span> (MONITOR_CPU_USAGE) &#123;</span><br><span class="line">            ServiceManager.addService(<span class="string">&quot;cpuinfo&quot;</span>, <span class="keyword">new</span> CpuBinder(<span class="keyword">this</span>), <span class="comment">/* allowIsolated= */</span> <span class="keyword">false</span>, DUMP_FLAG_PRIORITY_CRITICAL);</span><br><span class="line">        &#125;</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;permission&quot;</span>, <span class="keyword">new</span> PermissionController(<span class="keyword">this</span>));</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;processinfo&quot;</span>, <span class="keyword">new</span> ProcessInfoService(<span class="keyword">this</span>));</span><br><span class="line">        ServiceManager.addService(<span class="string">&quot;cacheinfo&quot;</span>, <span class="keyword">new</span> CacheBinder(<span class="keyword">this</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(<span class="string">&quot;android&quot;</span>, STOCK_PM_FLAGS | MATCH_SYSTEM_ONLY);</span><br><span class="line">        mSystemThread.installSystemApplicationInfo(info, getClass().getClassLoader());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建ProcessRecord维护进程信息</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ProcessRecord app = mProcessList.newProcessRecordLocked(info, info.processName,</span><br><span class="line">                    <span class="keyword">false</span>,</span><br><span class="line">                    <span class="number">0</span>,</span><br><span class="line">                    <span class="keyword">new</span> HostingRecord(<span class="string">&quot;system&quot;</span>));</span><br><span class="line">            app.setPersistent(<span class="keyword">true</span>);</span><br><span class="line">            app.pid = MY_PID;</span><br><span class="line">            app.getWindowProcessController().setPid(MY_PID);</span><br><span class="line">            app.maxAdj = ProcessList.SYSTEM_ADJ;</span><br><span class="line">            app.makeActive(mSystemThread.getApplicationThread(), mProcessStats);</span><br><span class="line">            addPidLocked(app);</span><br><span class="line">            mProcessList.updateLruProcessLocked(app, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">            updateOomAdjLocked(OomAdjuster.OOM_ADJ_REASON_NONE);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/// M: Dynamically enable AMS logs @&#123;</span></span><br><span class="line">        mAmsExt.enableAmsLog(mProcessList.mLruProcesses);</span><br><span class="line">        <span class="comment">/// @&#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/// M: CTA requirement(Auto boot manager)</span></span><br><span class="line">        CtaManagerFactory.getInstance().makeCtaManager().addAutoBootService(mContext);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (PackageManager.NameNotFoundException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Unable to find android system package&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="步骤四：核心服务准备完毕"><a href="#步骤四：核心服务准备完毕" class="headerlink" title="步骤四：核心服务准备完毕"></a>步骤四：核心服务准备完毕</h2><p>核心服务准备完毕，将READY状态同步到各个依赖组件<br>启动SystemUI和Launcher桌面应用程序  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">frameworks\base\services\java\com\android\server\SystemServer.java</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startOtherServices</span><span class="params">(<span class="meta">@NonNull</span> TimingsTraceAndSlog t)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="comment">// It is now time to start up the app processes...</span></span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakeVibratorServiceReady&quot;</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 振动器准备完毕</span></span><br><span class="line">		vibrator.systemReady();</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">		reportWtf(<span class="string">&quot;making Vibrator Service ready&quot;</span>, e);</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakeLockSettingsServiceReady&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (lockSettings != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			lockSettings.systemReady();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">			reportWtf(<span class="string">&quot;making Lock Settings Service ready&quot;</span>, e);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Needed by DevicePolicyManager for initialization</span></span><br><span class="line">	t.traceBegin(<span class="string">&quot;StartBootPhaseLockSettingsReady&quot;</span>);</span><br><span class="line">	mSystemServiceManager.startBootPhase(t, SystemService.PHASE_LOCK_SETTINGS_READY);</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;StartBootPhaseSystemServicesReady&quot;</span>);</span><br><span class="line">	mSystemServiceManager.startBootPhase(t, SystemService.PHASE_SYSTEM_SERVICES_READY);</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakeWindowManagerServiceReady&quot;</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// VM准备完毕</span></span><br><span class="line">		wm.systemReady();</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">		reportWtf(<span class="string">&quot;making Window Manager Service ready&quot;</span>, e);</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Emit any pending system_server WTFs</span></span><br><span class="line">	<span class="keyword">synchronized</span> (SystemService.class) &#123;</span><br><span class="line">		<span class="keyword">if</span> (sPendingWtfs != <span class="keyword">null</span>) &#123;</span><br><span class="line">			mActivityManagerService.schedulePendingSystemServerWtfs(sPendingWtfs);</span><br><span class="line">			sPendingWtfs = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (safeMode) &#123;</span><br><span class="line">		mActivityManagerService.showSafeModeOverlay();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Update the configuration for this context by hand, because we&#x27;re going</span></span><br><span class="line">	<span class="comment">// to start using it before the config change done in wm.systemReady() will</span></span><br><span class="line">	<span class="comment">// propagate to it.</span></span><br><span class="line">	<span class="keyword">final</span> Configuration config = wm.computeNewConfiguration(DEFAULT_DISPLAY);</span><br><span class="line">	DisplayMetrics metrics = <span class="keyword">new</span> DisplayMetrics();</span><br><span class="line">	context.getDisplay().getMetrics(metrics);</span><br><span class="line">	context.getResources().updateConfiguration(config, metrics);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// The system context&#x27;s theme may be configuration-dependent.</span></span><br><span class="line">	<span class="keyword">final</span> Theme systemTheme = context.getTheme();</span><br><span class="line">	<span class="keyword">if</span> (systemTheme.getChangingConfigurations() != <span class="number">0</span>) &#123;</span><br><span class="line">		systemTheme.rebase();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakePowerManagerServiceReady&quot;</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// <span class="doctag">TODO:</span> use boot phase</span></span><br><span class="line">		mPowerManagerService.systemReady(mActivityManagerService.getAppOpsService());</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">		reportWtf(<span class="string">&quot;making Power Manager Service ready&quot;</span>, e);</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Permission policy service</span></span><br><span class="line">	t.traceBegin(<span class="string">&quot;StartPermissionPolicyService&quot;</span>);</span><br><span class="line">	mSystemServiceManager.startService(PermissionPolicyService.class);</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakePackageManagerServiceReady&quot;</span>);</span><br><span class="line">    <span class="comment">// PMS准备完毕</span></span><br><span class="line">	mPackageManagerService.systemReady();</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	t.traceBegin(<span class="string">&quot;MakeDisplayManagerServiceReady&quot;</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// <span class="doctag">TODO:</span> use boot phase and communicate these flags some other way</span></span><br><span class="line">		mDisplayManagerService.systemReady(safeMode, mOnlyCore);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">		reportWtf(<span class="string">&quot;making Display Manager Service ready&quot;</span>, e);</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// We now tell the activity manager it is okay to run third party</span></span><br><span class="line">	<span class="comment">// code.  It will call back into us once it has gotten to the state</span></span><br><span class="line">	<span class="comment">// where third party code can really run (but before it has actually</span></span><br><span class="line">	<span class="comment">// started launching the initial applications), for us to complete our</span></span><br><span class="line">	<span class="comment">// initialization.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4.1.1 AMS 准备完毕，并在回调中完成启动SystemUI等工作</span></span><br><span class="line">	mActivityManagerService.systemReady(() -&gt; &#123;</span><br><span class="line">		Slog.i(TAG, <span class="string">&quot;Making services ready&quot;</span>);</span><br><span class="line">		t.traceBegin(<span class="string">&quot;StartActivityManagerReadyPhase&quot;</span>);</span><br><span class="line">		mSystemServiceManager.startBootPhase(t, SystemService.PHASE_ACTIVITY_MANAGER_READY);</span><br><span class="line">		t.traceEnd();</span><br><span class="line">		t.traceBegin(<span class="string">&quot;StartObservingNativeCrashes&quot;</span>);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 启动Nativa Crash监听</span></span><br><span class="line">			mActivityManagerService.startObservingNativeCrashes();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">			reportWtf(<span class="string">&quot;observing native crashes&quot;</span>, e);</span><br><span class="line">		&#125;</span><br><span class="line">		t.traceEnd();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">		</span><br><span class="line">		t.traceBegin(<span class="string">&quot;StartSystemUI&quot;</span>);</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			startSystemUi(context, windowManagerF);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">			reportWtf(<span class="string">&quot;starting System UI&quot;</span>, e);</span><br><span class="line">		&#125;</span><br><span class="line">		t.traceEnd();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">	</span><br><span class="line">		<span class="keyword">if</span> (mIncrementalServiceHandle != <span class="number">0</span>) &#123;</span><br><span class="line">			t.traceBegin(<span class="string">&quot;MakeIncrementalServiceReady&quot;</span>);</span><br><span class="line">			setIncrementalServiceSystemReady(mIncrementalServiceHandle);</span><br><span class="line">			t.traceEnd();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, t);</span><br><span class="line"></span><br><span class="line">    t.traceEnd(); <span class="comment">// startOtherServices</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">frameworks\base\services\core\java\com\android\server\SystemServiceManager.java</span><br><span class="line">frameworks\base\services\core\java\com\android\vm\ActivityTaskManagerService.java</span><br><span class="line">frameworks\base\services\core\java\com\android\vm\RootWindowContainer.java</span><br><span class="line"></span><br><span class="line"><span class="comment">// SystemServiceManager.java</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Ready. Set. Go!</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">systemReady</span><span class="params">(<span class="keyword">final</span> Runnable goingCallback, <span class="meta">@NonNull</span> TimingsTraceAndSlog t)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">	mSystemServiceManager.preSystemReady();</span><br><span class="line">	<span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (mSystemReady) &#123;</span><br><span class="line">			<span class="comment">// If we&#x27;re done calling all the receivers, run the next &quot;boot phase&quot; passed in</span></span><br><span class="line">			<span class="comment">// by the SystemServer</span></span><br><span class="line">			<span class="keyword">if</span> (goingCallback != <span class="keyword">null</span>) &#123;</span><br><span class="line">				goingCallback.run();</span><br><span class="line">			&#125;</span><br><span class="line">			t.traceEnd(); <span class="comment">// PhaseActivityManagerReady</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		t.traceBegin(<span class="string">&quot;controllersReady&quot;</span>);</span><br><span class="line">		mLocalDeviceIdleController = LocalServices.getService(DeviceIdleInternal.class);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 依赖组件同步Ready状态</span></span><br><span class="line">		mActivityTaskManager.onSystemReady();</span><br><span class="line">		<span class="comment">// Make sure we have the current profile info, since it is needed for security checks.</span></span><br><span class="line">		mUserController.onSystemReady();</span><br><span class="line">		mAppOpsService.systemReady();</span><br><span class="line">		mProcessList.onSystemReady();</span><br><span class="line">		mSystemReady = <span class="keyword">true</span>;</span><br><span class="line">		t.traceEnd();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">	Slog.i(TAG, <span class="string">&quot;System now ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">	EventLogTags.writeBootProgressAmsReady(SystemClock.uptimeMillis());</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	</span><br><span class="line">	t.traceBegin(<span class="string">&quot;updateForceBackgroundCheck&quot;</span>);</span><br><span class="line">	<span class="keyword">final</span> PowerManagerInternal pmi = LocalServices.getService(PowerManagerInternal.class);</span><br><span class="line">	<span class="keyword">if</span> (pmi != <span class="keyword">null</span>) &#123;</span><br><span class="line">		pmi.registerLowPowerModeObserver(ServiceType.FORCE_BACKGROUND_CHECK,state -&gt; updateForceBackgroundCheck(state.batterySaverEnabled));</span><br><span class="line">		updateForceBackgroundCheck(pmi.getLowPowerState(ServiceType.FORCE_BACKGROUND_CHECK).batterySaverEnabled);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		Slog.wtf(TAG, <span class="string">&quot;PowerManagerInternal not found.&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	t.traceEnd();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (goingCallback != <span class="keyword">null</span>) goingCallback.run();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	</span><br><span class="line">	t.traceBegin(<span class="string">&quot;ActivityManagerStartApps&quot;</span>);</span><br><span class="line">	mBatteryStatsService.noteEvent(BatteryStats.HistoryItem.EVENT_USER_RUNNING_START, Integer.toString(currentUserId), currentUserId);</span><br><span class="line">	mBatteryStatsService.noteEvent(BatteryStats.HistoryItem.EVENT_USER_FOREGROUND_START, Integer.toString(currentUserId), currentUserId);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// On Automotive, at this point the system user has already been started and unlocked,</span></span><br><span class="line">	<span class="comment">// and some of the tasks we do here have already been done. So skip those in that case.</span></span><br><span class="line">	<span class="comment">// TODO(b/132262830): this workdound shouldn&#x27;t be necessary once we move the</span></span><br><span class="line">	<span class="comment">// headless-user start logic to UserManager-land</span></span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">boolean</span> bootingSystemUser = currentUserId == UserHandle.USER_SYSTEM;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (bootingSystemUser) &#123;</span><br><span class="line">		<span class="comment">// 4.1.2 设置userid给所有已添加的SystemService并启动</span></span><br><span class="line">		mSystemServiceManager.startUser(t, currentUserId);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">		<span class="comment">// Only start up encryption-aware persistent apps; once user is</span></span><br><span class="line">		<span class="comment">// unlocked we&#x27;ll come back around and start unaware apps</span></span><br><span class="line">		t.traceBegin(<span class="string">&quot;startPersistentApps&quot;</span>);</span><br><span class="line">		startPersistentApps(PackageManager.MATCH_DIRECT_BOOT_AWARE);</span><br><span class="line">		t.traceEnd();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Start up initial activity.</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (bootingSystemUser) &#123;</span><br><span class="line">			t.traceBegin(<span class="string">&quot;startHomeOnAllDisplays&quot;</span>); </span><br><span class="line">			<span class="comment">// 4.1.3 启动HOME ACTIVITY， 也就是Launcher主页面</span></span><br><span class="line">            <span class="comment">// 实际调用 ActivityTaskManagerService.startHomeOnAllDisplays(currentUserId, &quot;systemReady&quot;);</span></span><br><span class="line">			mAtmInternal.startHomeOnAllDisplays(currentUserId, <span class="string">&quot;systemReady&quot;</span>);</span><br><span class="line">			t.traceEnd();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		t.traceBegin(<span class="string">&quot;showSystemReadyErrorDialogs&quot;</span>);</span><br><span class="line">		mAtmInternal.showSystemReadyErrorDialogsIfNeeded();</span><br><span class="line">		t.traceEnd();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (bootingSystemUser) &#123;</span><br><span class="line">			t.traceBegin(<span class="string">&quot;sendUserSwitchBroadcasts&quot;</span>);</span><br><span class="line">			mUserController.sendUserSwitchBroadcasts(-<span class="number">1</span>, currentUserId);</span><br><span class="line">			t.traceEnd();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		t.traceBegin(<span class="string">&quot;setBinderProxies&quot;</span>);</span><br><span class="line">		BinderInternal.nSetBinderProxyCountWatermarks(BINDER_PROXY_HIGH_WATERMARK, BINDER_PROXY_LOW_WATERMARK);</span><br><span class="line">		BinderInternal.nSetBinderProxyCountEnabled(<span class="keyword">true</span>);</span><br><span class="line">		BinderInternal.setBinderProxyCountCallback(</span><br><span class="line">				(uid) -&gt; &#123;</span><br><span class="line">					Slog.wtf(TAG, <span class="string">&quot;Uid &quot;</span> + uid + <span class="string">&quot; sent too many Binders to uid &quot;</span> + Process.myUid());</span><br><span class="line">					BinderProxy.dumpProxyDebugInfo();</span><br><span class="line">					<span class="keyword">if</span> (uid == Process.SYSTEM_UID) &#123;</span><br><span class="line">						Slog.i(TAG, <span class="string">&quot;Skipping kill (uid is SYSTEM)&quot;</span>);</span><br><span class="line">					&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">						killUid(UserHandle.getAppId(uid), UserHandle.getUserId(uid), <span class="string">&quot;Too many Binders sent to SYSTEM&quot;</span>);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;, mHandler);</span><br><span class="line">		t.traceEnd(); <span class="comment">// setBinderProxies</span></span><br><span class="line"></span><br><span class="line">		t.traceEnd(); <span class="comment">// ActivityManagerStartApps</span></span><br><span class="line">		t.traceEnd(); <span class="comment">// PhaseActivityManagerReady</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ActivityTaskManagerService.java</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startHomeOnAllDisplays</span><span class="params">(<span class="keyword">int</span> userId, String reason)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (mGlobalLock) &#123;</span><br><span class="line">        <span class="comment">// 4.1.4 启动HOME页面</span></span><br><span class="line">        <span class="comment">// 最终会调用mRootWindowContainer.startHomeOnTaskDisplayArea()方法</span></span><br><span class="line">        <span class="keyword">return</span> mRootWindowContainer.startHomeOnAllDisplays(userId, reason);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// RootWindowContainer.java</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * This starts home activity on display areas that can have system decorations based on</span></span><br><span class="line"><span class="comment"> * displayId - default display area always uses primary home component.</span></span><br><span class="line"><span class="comment"> * For secondary display areas, the home activity must have category SECONDARY_HOME and then</span></span><br><span class="line"><span class="comment"> * resolves according to the priorities listed below.</span></span><br><span class="line"><span class="comment"> *  - If default home is not set, always use the secondary home defined in the config.</span></span><br><span class="line"><span class="comment"> *  - Use currently selected primary home activity.</span></span><br><span class="line"><span class="comment"> *  - Use the activity in the same package as currently selected primary home activity.</span></span><br><span class="line"><span class="comment"> *    If there are multiple activities matched, use first one.</span></span><br><span class="line"><span class="comment"> *  - Use the secondary home defined in the config.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">startHomeOnTaskDisplayArea</span><span class="params">(<span class="keyword">int</span> userId, String reason, TaskDisplayArea taskDisplayArea,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> allowInstrumenting, <span class="keyword">boolean</span> fromHomeKey)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Fallback to top focused display area if the provided one is invalid.</span></span><br><span class="line">    <span class="keyword">if</span> (taskDisplayArea == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">final</span> ActivityStack stack = getTopDisplayFocusedStack();</span><br><span class="line">        taskDisplayArea = stack != <span class="keyword">null</span> ? stack.getDisplayArea() : getDefaultTaskDisplayArea();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Intent homeIntent = <span class="keyword">null</span>;</span><br><span class="line">    ActivityInfo aInfo = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (taskDisplayArea == getDefaultTaskDisplayArea()) &#123;</span><br><span class="line">        homeIntent = mService.getHomeIntent();</span><br><span class="line">        aInfo = resolveHomeActivity(userId, homeIntent);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (shouldPlaceSecondaryHomeOnDisplayArea(taskDisplayArea)) &#123;</span><br><span class="line">        Pair&lt;ActivityInfo, Intent&gt; info = resolveSecondaryHomeActivity(userId, taskDisplayArea);</span><br><span class="line">        aInfo = info.first;</span><br><span class="line">        homeIntent = info.second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (aInfo == <span class="keyword">null</span> || homeIntent == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!canStartHomeOnDisplayArea(aInfo, taskDisplayArea, allowInstrumenting)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Updates the home component of the intent.</span></span><br><span class="line">    homeIntent.setComponent(<span class="keyword">new</span> ComponentName(aInfo.applicationInfo.packageName, aInfo.name));</span><br><span class="line">    homeIntent.setFlags(homeIntent.getFlags() | FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">    <span class="comment">// Updates the extra information of the intent.</span></span><br><span class="line">    <span class="keyword">if</span> (fromHomeKey) &#123;</span><br><span class="line">        homeIntent.putExtra(WindowManagerPolicy.EXTRA_FROM_HOME_KEY, <span class="keyword">true</span>);</span><br><span class="line">        mWindowManager.cancelRecentsAnimation(REORDER_KEEP_IN_PLACE, <span class="string">&quot;startHomeActivity&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Update the reason for ANR debugging to verify if the user activity is the one that</span></span><br><span class="line">    <span class="comment">// actually launched.</span></span><br><span class="line">    <span class="keyword">final</span> String myReason = reason + <span class="string">&quot;:&quot;</span> + userId + <span class="string">&quot;:&quot;</span> + UserHandle.getUserId(aInfo.applicationInfo.uid) + <span class="string">&quot;:&quot;</span> + taskDisplayArea.getDisplayId();</span><br><span class="line">    mService.getActivityStartController().startHomeActivity(homeIntent, aInfo, myReason, taskDisplayArea);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>ActivityManagerService启动过程主要经历了以上几个重要的阶段，由于代码量过大，涉及各种系统服务几十种，调用链也非常复杂，因此只分析了核心的关键步骤，用于更好的理解Android系统架构  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>码字不易，请我喝杯咖啡吧</div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechat-pay.png" alt="Leevin Li 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/ali-pay.png" alt="Leevin Li 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Leevin Li
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://leevinli.github.io/pages/a330b8.html" title="ActivityManagerServer-原理解析">https://leevinli.github.io/pages/a330b8.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Framework/" rel="tag"># Framework</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/pages/597c7638.html" rel="prev" title="数据结构">
+                  <i class="fa fa-chevron-left"></i> 数据结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/pages/d371d908.html" rel="next" title="技术学习线路汇总">
+                  技术学习线路汇总 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leevin Li</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">147k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:13</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"jc61b6SYbv5IOFh3USW8vILL-gzGzoHsz","app_key":"oSkI6ftn09BXIsXyocxBli0s","server_url":"https://leancloud.cn","security":false};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) === '-MdYXbMMI' ? `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com` : server_url;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+</body>
+</html>
